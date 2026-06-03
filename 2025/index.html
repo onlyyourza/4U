@@ -11,40 +11,38 @@
     <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
     <title>4 YOU — 2025</title>
     <style>
-        * {
+        body {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
             user-select: none;
             -webkit-user-select: none;
-            -moz-user-select: none;
         }
 
-        html { scroll-behavior: smooth; }
-
-        body { margin: 0; padding: 0; }
-
-        /* Polaroid hero photos */
         .foto1 {
             position: absolute;
             width: 35%;
-            max-width: 200px;
             padding: 8px 8px 30px 8px;
             background-color: #ffffff;
-            box-shadow: 4px 4px 14px rgba(0, 0, 0, 0.18);
         }
 
-        /* Album cover frame */
         .foto2 {
             width: 70%;
-            background-color: #ffffff;
+            background-color: white;
         }
-        .foto2 img { padding: 10px 10px 0 10px; }
+        .foto2 img { padding: 10px 10px 0px 10px; }
 
-        #container3D { width: 100%; height: 100%; min-height: 50vh; }
-        #container3D canvas { width: 100% !important; height: 100% !important; }
+        #container3D canvas {
+            width: 100% !important;
+            height: 100% !important;
+            top: 0;
+            left: 0;
+        }
 
         audio { width: 100% !important; }
 
-        ::-webkit-scrollbar { width: 10px; }
-        ::-webkit-scrollbar-track { background: #f0f0f0; }
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: #f0f0f0; border-radius: 10px; }
         ::-webkit-scrollbar-thumb { background: #c8a97e; border-radius: 10px; border: 2px solid #f0f0f0; }
         ::-webkit-scrollbar-thumb:hover { background: #a68256; }
         * { scrollbar-width: thin; scrollbar-color: #c8a97e #f0f0f0; }
@@ -76,229 +74,227 @@
     <a href="../index.html" id="back-btn">← Kembali</a>
 
     <!-- Start Overlay -->
-    <div id="start" class="w-full h-full flex bg-[#FFF8E7] overflow-hidden fixed inset-0 z-20 justify-center items-center flex-col gap-4 text-[#443e36] font-extrabold text-8xl">
-        <div style="font-family:'Pacifico',cursive;" class="text-2xl text-[#7a6a55] font-normal">2025</div>
-        <button onclick="start()" class="px-6 py-3 bg-[#F5E1A4] text-[#443e36] text-2xl rounded-md font-extrabold font-sans">
-            START
-        </button>
+    <div id="start" class="w-full h-full flex bg-[#FFF8E7] overflow-hidden fixed inset-0 z-20 justify-center items-center text-[#443e36] font-extrabold text-8xl">
+        <button onclick="start()" class="px-6 py-3 bg-[#F5E1A4] text-[#443e36] text-2xl rounded-md flex justify-center items-center font-extrabold">START</button>
     </div>
 
-    <!-- Section 1: Happy Birthday -->
-    <div class="relative w-full min-h-screen flex justify-center items-center bg-[#fff3ce] flex-wrap overflow-hidden">
-        <div class="w-full md:w-1/2 z-10 flex flex-col justify-center items-center px-10 md:px-20 text-center py-16 md:py-0">
-            <div class="text-5xl font-extrabold mb-5 leading-loose" style="font-family:'Pacifico',cursive;" data-aos="fade-down" data-aos-duration="1000">
-                Happy Birthday
-            </div>
-            <div class="font-sans text-[#443e36]" data-aos="zoom-in" data-aos-duration="1000">
-                Selamat ulang tahun, Diana. Di hari spesialmu ini, aku ingin mempersembahkan sesuatu yang sederhana namun penuh makna. Website ini aku buat sebagai ruang kecil yang akan selalu menyimpan kenangan-kenangan indah kita — tempat di mana tawa kita, doa-doa yang kita panjatkan, dan cinta yang tak pernah habis bisa hidup selamanya.
-            </div>
-        </div>
-        <div class="w-full md:w-1/2 z-10 flex justify-center items-center relative h-[60vh] md:h-screen">
-            <div class="foto1 top-[20%] left-[8%]" data-aos="fade-right" data-aos-duration="2000">
-                <img src="../asset/img/utama.jpg" alt="" class="w-full">
-            </div>
-            <div class="foto1 top-[12%] right-[8%] rotate-[-12deg]" data-aos="fade-left" data-aos-duration="2000">
-                <img src="../asset/img/ketiga.jpg" alt="" class="w-full">
-            </div>
-            <div class="foto1 top-[48%] left-[28%] rotate-[8deg]" data-aos="fade-up" data-aos-duration="2000">
-                <img src="../asset/img/kedua.jpg" alt="" class="w-full">
-            </div>
-        </div>
-        <img src="../asset/bg1.png" alt="" class="w-full absolute bottom-0 left-0 pointer-events-none" onerror="this.style.display='none'">
-    </div>
+    <div class="w-full h-screen flex flex-col" id="content">
 
-    <!-- Section 2: Love Letter -->
-    <div class="w-full min-h-screen py-16 flex flex-col justify-center items-center bg-[#fff3ce]">
-        <div class="px-8 md:px-10 max-w-2xl">
-            <div class="font-bold text-3xl mb-4 text-[#443e36]" style="font-family:'Pacifico',cursive;" data-aos="fade-down" data-aos-duration="1500">
-                I Love You
+        <!-- Section 1: Happy Birthday -->
+        <div class="section relative w-full md:min-h-screen flex justify-center bg-[#fff3ce] flex-wrap snap-start">
+            <div class="max-w-full md:w-1/2 z-10 flex flex-col justify-center items-center px-20 text-center">
+                <div class="text-5xl font-extrabold mb-5 leading-loose" style="font-family:'Pacifico',cursive;" data-aos="fade-down" data-aos-duration="1000">
+                    Happy Birthday
+                </div>
+                <div class="font-sans" data-aos="zoom-in" data-aos-duration="1000">
+                    Selamat ulang tahun, Diana. Di hari spesialmu ini, aku ingin mempersembahkan sesuatu yang sederhana namun penuh makna. Website ini aku buat sebagai ruang kecil yang akan selalu menyimpan kenangan-kenangan indah kita — tempat di mana tawa kita, doa-doa yang kita panjatkan, dan cinta yang tak pernah habis bisa hidup selamanya.
+                </div>
             </div>
-            <div class="font-serif font-bold mb-5 text-lg text-[#443e36]" data-aos="fade-right" data-aos-duration="1500">
-                Hari ini ulang tahun Diana —
-                dan seperti setiap tahun, aku nggak cuma ngerayain Diana bertambah usia, tapi juga bersyukur karena Diana pernah (dan masih) jadi bagian dari hariku.
-            </div>
-            <div class="font-serif font-bold mb-5 text-lg text-[#443e36]" data-aos="fade-right" data-aos-duration="1500">
-                Semoga di umur baru ini, semua doa-doa yang Diana simpan dalam diam bisa satu per satu datang.
-                Semoga Diana sehat, dikuatkan hatinya, dan dikelilingi kasih sayang yang tulus, dari mana pun itu datang.
-            </div>
-            <div class="font-serif font-bold mb-5 text-lg text-[#443e36]" data-aos="fade-right" data-aos-duration="1500">
-                Dan, ada satu hal yang selalu aneh tapi nyata: Setiap kali aku dengar 2 lagu ini pasti langsung teringat diana, aku tidak tau itu lagu favoritnya diana atau bukan tapi karena Diana, lagu itu jadi salah satu lagu yang paling berkesan buatku.
-            </div>
-            <div class="font-serif font-bold mb-1 text-lg text-[#443e36]" data-aos="fade-right" data-aos-duration="1500">
-                "Excuse me if I spoke too soon<br>
-                My eyes have always followed you around the room..."<br>
-                — If I Had a Gun
-            </div>
-            <div class="font-serif font-bold mb-5 text-md text-[#443e36]" data-aos="fade-right" data-aos-duration="1500">
-                Kalimat itu selalu nyangkut. Karena ya... sejak awal, entah gimana caranya, mataku memang selalu nyari Diana duluan.
-                Dan tanpa Diana sadari, Diana udah jadi seseorang yang aku sayangi dan kagumi diam-diam.
-            </div>
-            <div class="font-serif font-bold mb-1 text-lg text-[#443e36]" data-aos="fade-right" data-aos-duration="1500">
-                "She says that I'm crazy, but I don't let it faze me<br>
-                Taste me, baby, take me as you please…"<br>
-                — Take Me As You Please
-            </div>
-            <div class="font-serif font-bold mb-5 text-md text-[#443e36]" data-aos="fade-right" data-aos-duration="1500">
-                Aku nggak pernah nuntut banyak dari Diana.
-                Aku cuma pengen jadi diri sendiri, dan diterima. Apa adanya. Sama seperti aku nerima Diana.
-            </div>
-            <div class="font-serif font-bold mb-5 text-lg text-[#443e36]" data-aos="fade-up" data-aos-duration="1500">
-                Nggak banyak yang bisa aku kasih hari ini, tapi aku selalu berusaha jadi diri sendiri di depan Diana — dan berharap itu cukup.
-            </div>
-            <div class="font-serif font-bold text-lg text-[#443e36]" data-aos="fade-up" data-aos-duration="1500">
-                Selamat ulang tahun, sayang. Mari kita buat lebih banyak kenangan, tawa, dan mimpi bersama.
-                Di hari bahagiamu ini, semoga semua cinta yang kamu berikan ke dunia kembali padamu dengan berkali lipat.
-            </div>
-        </div>
-    </div>
 
-    <!-- Section 3: Music + 3D -->
-    <div class="w-full flex justify-center flex-wrap">
-        <div class="w-full md:w-1/2 min-h-[50vh] bg-[#f5d7a4]">
-            <div id="container3D" data-aos="zoom-in" data-aos-duration="2000"></div>
+            <div class="w-full md:w-1/2 z-10 flex justify-center items-center relative mb-96 mt-20 md:m-0">
+                <div class="foto1 top-[25%] left-[0%]" data-aos="fade-right" data-aos-duration="3000">
+                    <img src="../asset/img/utama.jpg" alt="" class="w-full">
+                </div>
+                <div class="foto1 top-[15%] right-[10%] rotate-[-15deg]" data-aos="fade-left" data-aos-duration="3000">
+                    <img src="../asset/img/ketiga.jpg" alt="" class="w-full">
+                </div>
+                <div class="foto1 md:top-[40%] top-[40%] left-[30%] rotate-[10deg]" data-aos="fade-up" data-aos-duration="3000">
+                    <img src="../asset/img/kedua.jpg" alt="" class="w-full">
+                </div>
+            </div>
+            <img src="../asset/bg1.png" alt="" class="w-full absolute" data-aos="fade-down" data-aos-duration="1000">
         </div>
-        <div class="w-full md:w-1/2 bg-[#ffeace] flex flex-col justify-center items-center py-12">
-            <div class="mb-8 font-extrabold text-4xl text-[#443e36]" style="font-family:'Pacifico',cursive;" data-aos="fade-down" data-aos-duration="1500">
-                2 lagu ini
-            </div>
-            <div class="foto2 mb-8" data-aos="fade-left" data-aos-duration="1500">
-                <img src="../asset/album cover 1.jpeg" alt="" class="w-full object-cover">
-                <audio controls class="mt-3">
-                    <source src="../asset/1.mp3" type="audio/mpeg">
-                </audio>
-            </div>
-            <div class="foto2" data-aos="fade-right" data-aos-duration="1500">
-                <img src="../asset/album cover 2.jpeg" alt="" class="w-full object-cover">
-                <audio controls class="mt-3">
-                    <source src="../asset/2.mp3" type="audio/mpeg">
-                </audio>
-            </div>
-        </div>
-    </div>
 
-    <!-- Section 4: Doa -->
-    <div class="w-full min-h-screen flex flex-col justify-center items-center bg-[#FFF8E7] py-16">
-        <div class="mb-8 font-extrabold text-4xl text-[#443e36]" style="font-family:'Pacifico',cursive;" data-aos="fade-down" data-aos-duration="1500">
-            Doaku Untukmu
+        <!-- Section 2: Love Letter -->
+        <div class="section w-full py-10 flex flex-col justify-center items-center flex-wrap snap-start bg-[#fff3ce]">
+            <div class="m-10">
+                <div class="font-bold text-3xl mb-2" style="font-family:'Pacifico',cursive;" data-aos="fade-down" data-aos-duration="3000">
+                    I Love You
+                </div>
+                <div class="font-serif font-bold mb-5 text-lg" data-aos="fade-right" data-aos-duration="3000">
+                    Hari ini ulang tahun Diana —
+                    dan seperti setiap tahun, aku nggak cuma ngerayain Diana bertambah usia, tapi juga bersyukur karena Diana pernah (dan masih) jadi bagian dari hariku.
+                </div>
+                <div class="font-serif font-bold mb-5 text-lg" data-aos="fade-right" data-aos-duration="3000">
+                    Semoga di umur baru ini, semua doa-doa yang Diana simpan dalam diam bisa satu per satu datang.
+                    Semoga Diana sehat, dikuatkan hatinya, dan dikelilingi kasih sayang yang tulus, dari mana pun itu datang.
+                </div>
+                <div class="font-serif font-bold mb-5 text-lg" data-aos="fade-right" data-aos-duration="3000">
+                    Dan, ada satu hal yang selalu aneh tapi nyata: Setiap kali aku dengar 2 lagu ini pasti langsung teringat diana, aku tidak tau itu lagu favoritnya diana atau bukan tapi karena Diana, lagu itu jadi salah satu lagu yang paling berkesan buatku.
+                </div>
+                <div class="font-serif font-bold mb-1 text-lg" data-aos="fade-right" data-aos-duration="3000">
+                    "Excuse me if I spoke too soon
+                    My eyes have always followed you around the room..."
+                    — If I Had a Gun
+                </div>
+                <div class="font-serif font-bold mb-5 text-md" data-aos="fade-right" data-aos-duration="3000">
+                    Kalimat itu selalu nyangkut. Karena ya... sejak awal, entah gimana caranya, mataku memang selalu nyari Diana duluan.
+                    Dan tanpa Diana sadari, Diana udah jadi seseorang yang aku sayangi dan kagumi diam-diam.
+                </div>
+                <div class="font-serif font-bold mb-1 text-lg" data-aos="fade-right" data-aos-duration="3000">
+                    "She says that I'm crazy, but I don't let it faze me
+                    Taste me, baby, take me as you please…"
+                    — Take Me As You Please
+                </div>
+                <div class="font-serif font-bold mb-5 text-md" data-aos="fade-right" data-aos-duration="3000">
+                    Aku nggak pernah nuntut banyak dari Diana.
+                    Aku cuma pengen jadi diri sendiri, dan diterima. Apa adanya. Sama seperti aku nerima Diana.
+                </div>
+            </div>
+            <div class="m-8">
+                <div class="font-serif font-bold mb-5 text-lg" data-aos="fade-right" data-aos-duration="3000">
+                    Nggak banyak yang bisa aku kasih hari ini, tapi aku selalu berusaha jadi diri sendiri di depan Diana — dan berharap itu cukup.
+                </div>
+                <div class="font-serif font-bold mb-5 text-lg" data-aos="fade-right" data-aos-duration="3000">
+                    Selamat ulang tahun, sayang. Mari kita buat lebih banyak kenangan, tawa, dan mimpi bersama.
+                    Di hari bahagiamu ini, semoga semua cinta yang kamu berikan ke dunia kembali padamu dengan berkali lipat.
+                </div>
+            </div>
         </div>
-        <div id="draggable-scroll" class="overflow-x-auto snap-x snap-mandatory flex w-[90%] gap-4 no-scrollbar p-4">
-            <div class="flex-shrink-0 snap-center" data-aos="fade-up" data-aos-duration="1500">
-                <div class="flex flex-col py-4 items-center bg-[#f5d7a4] rounded-lg w-52 h-52 text-center shadow-lg shadow-[#a7916d]">
-                    <div class="font-bold m-2 text-[#443e36]">Ya Tuhan, bahagiakanlah dia seperti bagaimana dia membahagiakanku setiap hari.</div>
-                </div>
-            </div>
-            <div class="flex-shrink-0 snap-center" data-aos="fade-up" data-aos-duration="1500">
-                <div class="flex flex-col py-4 items-center bg-[#ffeace] rounded-lg w-52 h-52 text-center shadow-lg shadow-[#8d8172]">
-                    <div class="font-bold m-2 text-[#443e36]">Lindungilah Diana dalam setiap langkahnya, dan kuatkan hatinya di saat ia rapuh.</div>
-                </div>
-            </div>
-            <div class="flex-shrink-0 snap-center" data-aos="fade-up" data-aos-duration="1500">
-                <div class="flex flex-col py-4 items-center bg-[#f5d7a4] rounded-lg w-52 h-52 text-center shadow-lg shadow-[#a7916d]">
-                    <div class="font-bold m-2 text-[#443e36]">Berikanlah ia kedamaian dalam pikirannya, dan kehangatan dalam hatinya.</div>
-                </div>
-            </div>
-            <div class="flex-shrink-0 snap-center" data-aos="fade-up" data-aos-duration="1500">
-                <div class="flex flex-col py-4 items-center bg-[#ffeace] rounded-lg w-52 h-52 text-center shadow-lg shadow-[#8d8172]">
-                    <div class="font-bold m-2 text-[#443e36]">Semoga cintaku padanya menjadi berkah, bukan beban. Menjadi kekuatan, bukan kelemahan.</div>
-                </div>
-            </div>
-            <div class="flex-shrink-0 snap-center" data-aos="fade-up" data-aos-duration="1500">
-                <div class="flex flex-col py-4 items-center bg-[#f5d7a4] rounded-lg w-52 h-52 text-center shadow-lg shadow-[#a7916d]">
-                    <div class="font-bold m-2 text-[#443e36]">Jauhkan dia dari luka yang tak terlihat, dan hadirkan orang-orang baik di sekelilingnya.</div>
-                </div>
-            </div>
-            <div class="flex-shrink-0 snap-center" data-aos="fade-up" data-aos-duration="1500">
-                <div class="flex flex-col py-4 items-center bg-[#ffeace] rounded-lg w-52 h-52 text-center shadow-lg shadow-[#8d8172]">
-                    <div class="font-bold m-2 text-[#443e36]">Panjangkan umurnya dalam kebaikan, sehatkan tubuhnya, dan lapangkan rezekinya.</div>
-                </div>
-            </div>
-            <div class="flex-shrink-0 snap-center" data-aos="fade-up" data-aos-duration="1500">
-                <div class="flex flex-col py-4 items-center bg-[#f5d7a4] rounded-lg w-52 h-52 text-center shadow-lg shadow-[#a7916d]">
-                    <div class="font-bold m-2 text-[#443e36]">Ijinkan aku terus mencintai dan menjaga Diana dengan caraku yang sederhana namun sungguh-sungguh.</div>
-                </div>
-            </div>
-            <div class="flex-shrink-0 snap-center" data-aos="fade-up" data-aos-duration="1500">
-                <div class="flex flex-col py-4 items-center bg-[#ffeace] rounded-lg w-52 h-52 text-center shadow-lg shadow-[#8d8172]">
-                    <div class="font-bold m-2 text-[#443e36]">Jika aku adalah takdirnya, tuntunlah kami agar saling menguatkan dan tumbuh bersama dalam cinta yang Engkau ridhoi.</div>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <!-- Section 5: Gallery -->
-    <div class="w-full flex flex-col items-center bg-[#fff3ce] relative pb-16">
-        <img src="../asset/bg2.png" alt="" class="w-full absolute top-0 left-0 pointer-events-none" onerror="this.style.display='none'">
-        <div class="my-12 font-extrabold text-4xl text-[#443e36] z-10" style="font-family:'Pacifico',cursive;" data-aos="fade-down" data-aos-duration="1500">
-            Galeri Foto
+        <!-- Section 3: Music + 3D -->
+        <div class="section w-full flex justify-center flex-wrap snap-start">
+            <div class="w-full md:w-1/2 min-h-[50vh] bg-[#f5d7a4]">
+                <div id="container3D" class="w-full h-full" data-aos="zoom-in" data-aos-duration="3000"></div>
+            </div>
+            <div class="w-full md:w-1/2 bg-[#ffeace] flex flex-col justify-center items-center">
+                <div class="my-10 font-extrabold text-4xl" style="font-family:'Pacifico',cursive;" data-aos="fade-down" data-aos-duration="2000">
+                    2 lagu ini
+                </div>
+                <div class="foto2 mb-10 relative group" data-aos="fade-left" data-aos-duration="3000">
+                    <img src="../asset/album cover 1.jpeg" alt="" class="w-full object-cover">
+                    <audio controls class="w-full mt-5">
+                        <source src="../asset/1.mp3" type="audio/mpeg">
+                    </audio>
+                </div>
+                <div class="foto2 mb-10 relative group" data-aos="fade-right" data-aos-duration="3000">
+                    <img src="../asset/album cover 2.jpeg" alt="" class="w-full object-cover">
+                    <audio controls class="w-full mt-5">
+                        <source src="../asset/2.mp3" type="audio/mpeg">
+                    </audio>
+                </div>
+            </div>
         </div>
-        <div class="flex flex-wrap justify-center gap-6 z-10 w-full px-4 max-w-6xl" id="gallery-grid"></div>
+
+        <!-- Section 4: Doa -->
+        <div class="section w-full min-h-screen flex flex-col justify-center items-center flex-wrap snap-start bg-[#FFF8E7]">
+            <div class="my-10 font-extrabold text-4xl" style="font-family:'Pacifico',cursive;" data-aos="fade-down" data-aos-duration="1000">
+                Doaku Untukmu
+            </div>
+            <div id="draggable-scroll" class="overflow-x-auto snap-x snap-mandatory flex w-[90%] gap-4 no-scrollbar p-4">
+                <div class="flex-shrink-0 snap-center" data-aos="fade-up" data-aos-duration="3000">
+                    <div class="flex flex-col py-4 items-center bg-[#f5d7a4] rounded-lg w-52 h-52 text-center shadow-lg shadow-[#a7916d]">
+                        <div class="font-bold m-2">Ya Tuhan, bahagiakanlah dia seperti bagaimana dia membahagiakanku setiap hari.</div>
+                    </div>
+                </div>
+                <div class="flex-shrink-0 snap-center" data-aos="fade-down" data-aos-duration="3000">
+                    <div class="flex flex-col py-4 items-center bg-[#ffeace] rounded-lg w-52 h-52 text-center shadow-lg shadow-[#8d8172]">
+                        <div class="font-bold m-2">Lindungilah Diana dalam setiap langkahnya, dan kuatkan hatinya di saat ia rapuh.</div>
+                    </div>
+                </div>
+                <div class="flex-shrink-0 snap-center" data-aos="fade-up" data-aos-duration="3000">
+                    <div class="flex flex-col py-4 items-center bg-[#f5d7a4] rounded-lg w-52 h-52 text-center shadow-lg shadow-[#a7916d]">
+                        <div class="font-bold m-2">Berikanlah ia kedamaian dalam pikirannya, dan kehangatan dalam hatinya.</div>
+                    </div>
+                </div>
+                <div class="flex-shrink-0 snap-center" data-aos="fade-down" data-aos-duration="3000">
+                    <div class="flex flex-col py-4 items-center bg-[#ffeace] rounded-lg w-52 h-52 text-center shadow-lg shadow-[#8d8172]">
+                        <div class="font-bold m-2">Semoga cintaku padanya menjadi berkah, bukan beban. Menjadi kekuatan, bukan kelemahan.</div>
+                    </div>
+                </div>
+                <div class="flex-shrink-0 snap-center" data-aos="fade-up" data-aos-duration="3000">
+                    <div class="flex flex-col py-4 items-center bg-[#f5d7a4] rounded-lg w-52 h-52 text-center shadow-lg shadow-[#a7916d]">
+                        <div class="font-bold m-2">Jauhkan dia dari luka yang tak terlihat, dan hadirkan orang-orang baik di sekelilingnya.</div>
+                    </div>
+                </div>
+                <div class="flex-shrink-0 snap-center" data-aos="fade-down" data-aos-duration="3000">
+                    <div class="flex flex-col py-4 items-center bg-[#ffeace] rounded-lg w-52 h-52 text-center shadow-lg shadow-[#8d8172]">
+                        <div class="font-bold m-2">Panjangkan umurnya dalam kebaikan, sehatkan tubuhnya, dan lapangkan rezekinya.</div>
+                    </div>
+                </div>
+                <div class="flex-shrink-0 snap-center" data-aos="fade-up" data-aos-duration="3000">
+                    <div class="flex flex-col py-4 items-center bg-[#f5d7a4] rounded-lg w-52 h-52 text-center shadow-lg shadow-[#a7916d]">
+                        <div class="font-bold m-2">Ijinkan aku terus mencintai dan menjaga Diana dengan caraku yang sederhana namun sungguh-sungguh.</div>
+                    </div>
+                </div>
+                <div class="flex-shrink-0 snap-center" data-aos="fade-down" data-aos-duration="3000">
+                    <div class="flex flex-col py-4 items-center bg-[#ffeace] rounded-lg w-52 h-52 text-center shadow-lg shadow-[#8d8172]">
+                        <div class="font-bold m-2">Jika aku adalah takdirnya, tuntunlah kami agar saling menguatkan dan tumbuh bersama dalam cinta yang Engkau ridhoi.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 5: Gallery -->
+        <div class="section w-full flex flex-col items-center snap-start bg-[#fff3ce] relative">
+            <img src="../asset/bg2.png" alt="" class="w-full absolute">
+            <div class="my-10 font-extrabold text-4xl z-10 mb-16" style="font-family:'Pacifico',cursive;" data-aos="fade-down" data-aos-duration="3000">
+                Galeri Foto
+            </div>
+            <div class="flex flex-wrap justify-center gap-7 mb-10 z-10" id="gallery-grid"></div>
+        </div>
+
     </div>
 
     <script>
-        // Generate gallery
+        // Generate gallery (IMG-20250609-WA0011 .. WA0076)
         const gallery = document.getElementById('gallery-grid');
         for (let i = 11; i <= 76; i++) {
             const num = String(i).padStart(4, '0');
             const div = document.createElement('div');
-            div.className = 'bg-white p-2 rounded-xl max-w-[280px] h-fit';
+            div.className = 'bg-white p-2 rounded-xl max-w-[300px] h-fit';
             div.setAttribute('data-aos', 'zoom-in');
-            div.setAttribute('data-aos-duration', '1200');
+            div.setAttribute('data-aos-duration', '3000');
             div.innerHTML = `<img src="../asset/img/IMG-20250609-WA${num}.jpg" alt="" class="rounded-lg w-full" onerror="this.parentElement.style.display='none'">`;
             gallery.appendChild(div);
         }
 
-        // AOS init — body is the scroller so AOS works correctly
-        AOS.init({ once: true, offset: 80 });
+        const audio = new Audio('../asset/confetti.mp3');
+        const jsConfetti = new JSConfetti();
+        const starts = document.getElementById('start');
+        const body = document.body;
 
         function start() {
-            const startEl = document.getElementById('start');
-            startEl.querySelector('button').style.display = 'none';
-            let count = 5;
-            const countEl = document.createElement('div');
-            countEl.className = 'text-8xl font-extrabold text-[#443e36]';
-            startEl.appendChild(countEl);
-
-            const interval = setInterval(() => {
-                countEl.textContent = count--;
-                if (count < 0) {
-                    clearInterval(interval);
-                    startEl.style.display = 'none';
-                    document.body.classList.remove('overflow-hidden');
-                    document.getElementById('back-btn').style.display = 'block';
-
-                    new JSConfetti().addConfetti({
-                        confettiColors: ['#f5d7a4','#ffeace','#e8c47a','#fff3ce','#443e36']
-                    });
-                    new Audio('../asset/confetti.mp3').play().catch(() => {});
-                    const m = new Audio('../asset/musik.mp3');
-                    m.loop = true; m.volume = 0.4; m.play().catch(() => {});
-
-                    AOS.refresh();
-                }
-            }, 1000);
+            let countdown = 5;
+            for (let i = 0; i < countdown; i++) {
+                setTimeout(() => { starts.textContent = countdown - i; }, i * 1000);
+            }
+            setTimeout(() => {
+                starts.classList.add('hidden');
+                body.classList.remove('overflow-hidden');
+                document.getElementById('back-btn').style.display = 'block';
+                audio.play().catch(() => {});
+                jsConfetti.addConfetti();
+                AOS.init();
+                const m = new Audio('../asset/musik.mp3');
+                m.loop = true; m.volume = 0.4; m.play().catch(() => {});
+            }, countdown * 1000);
         }
 
-        // Drag-scroll doa cards with momentum
+        // Momentum drag-scroll for doa (same as original script.js)
         const slider = document.getElementById('draggable-scroll');
-        let isDown = false, startX, scrollLeft, velocity = 0, target, raf;
-        slider.addEventListener('mousedown', e => { isDown = true; startX = e.pageX - slider.offsetLeft; scrollLeft = slider.scrollLeft; target = scrollLeft; velocity = 0; cancelAnimationFrame(raf); });
-        slider.addEventListener('mouseleave', () => { if (isDown) { isDown = false; momentum(); } });
-        slider.addEventListener('mouseup', () => { if (isDown) { isDown = false; momentum(); } });
+        let isDown = false, startX, scrollLeft, velocity = 0, targetScrollLeft, animationFrame;
+        slider.style.scrollBehavior = 'auto';
+        slider.addEventListener('mousedown', e => { isDown = true; startX = e.pageX - slider.offsetLeft; scrollLeft = slider.scrollLeft; targetScrollLeft = scrollLeft; velocity = 0; cancelAnimationFrame(animationFrame); });
+        slider.addEventListener('mouseleave', () => { if (isDown) { isDown = false; momentumScroll(); } });
+        slider.addEventListener('mouseup', () => { if (isDown) { isDown = false; momentumScroll(); } });
         slider.addEventListener('mousemove', e => {
             if (!isDown) return; e.preventDefault();
             const x = e.pageX - slider.offsetLeft;
-            target = scrollLeft - (x - startX) * 2;
-            velocity = target - slider.scrollLeft;
+            const walk = (x - startX) * 2;
+            targetScrollLeft = scrollLeft - walk;
+            velocity = targetScrollLeft - slider.scrollLeft;
         });
-        function momentum() {
+        function momentumScroll() {
+            const lerp = (a, b, t) => a + (b - a) * t;
             velocity *= 0.95;
-            target -= velocity;
-            slider.scrollLeft += (target - slider.scrollLeft) * 0.1;
-            if (Math.abs(velocity) > 0.5) raf = requestAnimationFrame(momentum);
+            targetScrollLeft -= velocity;
+            slider.scrollLeft = lerp(slider.scrollLeft, targetScrollLeft, 0.1);
+            if (Math.abs(velocity) > 0.5) animationFrame = requestAnimationFrame(momentumScroll);
         }
     </script>
 
-    <!-- 3D dino model (same library version as original) -->
+    <!-- 3D dino model (three.js 0.129.0, same as original main.js) -->
     <script type="module">
         import * as THREE from 'https://cdn.skypack.dev/three@0.129.0/build/three.module.js';
         import { OrbitControls } from 'https://cdn.skypack.dev/three@0.129.0/examples/jsm/controls/OrbitControls.js';
@@ -326,7 +322,7 @@
             gltf.scene.scale.set(1.5, 1.5, 1.5);
             scene.add(gltf.scene);
             animate();
-        }, undefined, err => console.error('Error loading model:', err));
+        }, xhr => console.log(`${(xhr.loaded / xhr.total) * 100}% loaded`), err => console.error('Error loading model:', err));
 
         window.addEventListener('resize', () => {
             camera.aspect = container.clientWidth / container.clientHeight;

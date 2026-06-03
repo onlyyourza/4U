@@ -8,94 +8,162 @@
     <script src="https://cdn.jsdelivr.net/npm/js-confetti@latest/dist/js-confetti.browser.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css" />
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Spline 3D viewer -->
+    <script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.48/build/spline-viewer.js"></script>
     <title>4 YOU — 2026</title>
     <style>
         * {
             user-select: none;
             -webkit-user-select: none;
             -moz-user-select: none;
+            box-sizing: border-box;
         }
 
         html { scroll-behavior: smooth; }
-        body { margin: 0; padding: 0; }
+        body { margin: 0; padding: 0; font-family: 'Quicksand', sans-serif; color: #6b2c44; }
 
-        .foto1 {
-            position: absolute;
-            width: 35%;
-            max-width: 200px;
-            padding: 8px 8px 30px 8px;
-            background-color: #ffffff;
-            box-shadow: 4px 4px 14px rgba(0, 0, 0, 0.18);
+        .pacifico { font-family: 'Pacifico', cursive; }
+
+        /* ===== Floating hearts background ===== */
+        .heart-float {
+            position: fixed;
+            bottom: -40px;
+            font-size: 20px;
+            opacity: 0.6;
+            pointer-events: none;
+            z-index: 1;
+            animation: floatUp linear infinite;
+        }
+        @keyframes floatUp {
+            to { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
         }
 
-        #container3D { width: 100%; height: 100%; min-height: 50vh; }
-        #container3D canvas { width: 100% !important; height: 100% !important; }
+        /* ===== Empty polaroid placeholders ===== */
+        .polaroid {
+            background: #fff;
+            padding: 10px 10px 28px 10px;
+            border-radius: 6px;
+            box-shadow: 0 10px 30px rgba(251, 111, 146, 0.25);
+        }
+        .polaroid-empty {
+            width: 100%;
+            aspect-ratio: 3/4;
+            border: 2px dashed #ffafcc;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffafcc;
+            font-size: 28px;
+            background: #fff5f9;
+        }
 
-        ::-webkit-scrollbar { width: 10px; }
-        ::-webkit-scrollbar-track { background: #f0f0f0; }
-        ::-webkit-scrollbar-thumb { background: #c8a97e; border-radius: 10px; border: 2px solid #f0f0f0; }
-        ::-webkit-scrollbar-thumb:hover { background: #a68256; }
-        * { scrollbar-width: thin; scrollbar-color: #c8a97e #f0f0f0; }
+        /* ===== Spline ===== */
+        spline-viewer { width: 100%; height: 100%; }
+
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: #ffe4ee; }
+        ::-webkit-scrollbar-thumb { background: #ff8fab; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #fb6f92; }
+        * { scrollbar-width: thin; scrollbar-color: #ff8fab #ffe4ee; }
 
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
+        /* ===== Buttons ===== */
         #back-btn {
-            position: fixed;
-            top: 16px; left: 16px;
-            z-index: 100;
-            background: #f5d7a4;
-            color: #443e36;
-            padding: 8px 16px;
-            border-radius: 999px;
-            font-family: sans-serif;
-            font-weight: bold;
-            font-size: 13px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            transition: background 0.2s;
-            display: none;
-            text-decoration: none;
+            position: fixed; top: 16px; left: 16px; z-index: 100;
+            background: #ff8fab; color: #fff; padding: 8px 16px; border-radius: 999px;
+            font-weight: 700; font-size: 13px; box-shadow: 0 4px 12px rgba(251,111,146,0.4);
+            transition: transform 0.2s, background 0.2s; display: none; text-decoration: none;
         }
-        #back-btn:hover { background: #e8c47a; }
+        #back-btn:hover { background: #fb6f92; transform: translateY(-2px); }
 
-        #upload-zone {
-            border: 3px dashed #c9a96e;
-            transition: border-color 0.2s, background 0.2s;
-            position: relative;
+        #music-toggle {
+            position: fixed; bottom: 20px; right: 20px; z-index: 100;
+            width: 52px; height: 52px; border-radius: 50%; border: none;
+            background: #ff8fab; color: #fff; font-size: 22px; cursor: pointer;
+            box-shadow: 0 6px 18px rgba(251,111,146,0.45);
+            transition: transform 0.2s; display: none;
         }
-        #upload-zone.dragover { border-color: #443e36; background: #fff3ce; }
-        #upload-zone input[type="file"] {
-            position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
-        }
+        #music-toggle:hover { transform: scale(1.1); }
+        #music-toggle.playing { animation: spin 4s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
-        .progress-bar { height: 4px; background: #c9a96e; border-radius: 2px; transition: width 0.3s ease; }
+        /* ===== Doa slider ===== */
+        .doa-track {
+            display: flex; gap: 18px; overflow-x: auto; scroll-behavior: smooth;
+            padding: 8px 4px 20px; cursor: grab; scroll-snap-type: x proximity;
+        }
+        .doa-track.grabbing { cursor: grabbing; scroll-behavior: auto; }
+        .doa-card {
+            flex: 0 0 240px; scroll-snap-align: center;
+            border-radius: 20px; padding: 28px 22px; min-height: 220px;
+            display: flex; align-items: center; justify-content: center; text-align: center;
+            font-weight: 600; box-shadow: 0 10px 26px rgba(251,111,146,0.22);
+        }
+        .doa-arrow {
+            width: 44px; height: 44px; border-radius: 50%; border: none; cursor: pointer;
+            background: #fff; color: #fb6f92; font-size: 20px; box-shadow: 0 4px 14px rgba(251,111,146,0.3);
+            transition: transform 0.2s, background 0.2s; flex-shrink: 0;
+        }
+        .doa-arrow:hover { background: #fb6f92; color: #fff; transform: scale(1.08); }
+
+        /* ===== Memory game ===== */
+        .game-grid {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
+            width: 100%; max-width: 420px; margin: 0 auto;
+        }
+        .card {
+            aspect-ratio: 1; border-radius: 14px; cursor: pointer;
+            perspective: 600px; background: transparent;
+        }
+        .card-inner {
+            position: relative; width: 100%; height: 100%;
+            transition: transform 0.5s; transform-style: preserve-3d;
+        }
+        .card.flipped .card-inner, .card.matched .card-inner { transform: rotateY(180deg); }
+        .card-face {
+            position: absolute; inset: 0; border-radius: 14px;
+            display: flex; align-items: center; justify-content: center;
+            backface-visibility: hidden; font-size: clamp(24px, 7vw, 40px);
+        }
+        .card-front {
+            background: linear-gradient(135deg, #ff8fab, #fb6f92); color: #fff; font-size: 26px;
+            box-shadow: 0 6px 16px rgba(251,111,146,0.35);
+        }
+        .card-back {
+            background: #fff; transform: rotateY(180deg);
+            box-shadow: 0 6px 16px rgba(251,111,146,0.25);
+        }
+        .card.matched { animation: pop 0.4s ease; }
+        @keyframes pop { 0%,100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+
+        /* ===== Upload ===== */
+        #upload-zone { border: 3px dashed #ffafcc; transition: 0.2s; position: relative; }
+        #upload-zone.dragover { border-color: #fb6f92; background: #ffe4ee; }
+        #upload-zone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+        .progress-bar { height: 4px; background: #fb6f92; border-radius: 2px; transition: width 0.3s; }
 
         .gallery-card { animation: fadeInUp 0.4s ease forwards; position: relative; }
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
         .delete-btn {
-            position: absolute; top: 8px; right: 8px;
-            background: rgba(220, 80, 80, 0.85); color: white; border: none;
-            width: 26px; height: 26px; border-radius: 50%; font-size: 14px; cursor: pointer;
-            opacity: 0; transition: opacity 0.2s; display: flex; align-items: center; justify-content: center;
-            font-family: sans-serif;
+            position: absolute; top: 8px; right: 8px; background: rgba(251,111,146,0.9); color: #fff;
+            border: none; width: 26px; height: 26px; border-radius: 50%; font-size: 14px; cursor: pointer;
+            opacity: 0; transition: 0.2s; display: flex; align-items: center; justify-content: center;
         }
         .gallery-card:hover .delete-btn { opacity: 1; }
 
-        #lightbox {
-            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.88);
-            z-index: 300; justify-content: center; align-items: center;
-        }
+        #lightbox { display: none; position: fixed; inset: 0; background: rgba(80,20,40,0.9); z-index: 300; justify-content: center; align-items: center; }
         #lightbox.active { display: flex; }
         #lightbox img { max-width: 90vw; max-height: 90vh; border-radius: 12px; }
-        #lightbox-close { position: absolute; top: 20px; right: 24px; color: white; font-size: 32px; cursor: pointer; font-family: sans-serif; line-height: 1; }
+        #lightbox-close { position: absolute; top: 20px; right: 24px; color: #fff; font-size: 32px; cursor: pointer; }
 
         #toast {
-            position: fixed; bottom: 24px; left: 50%;
-            transform: translateX(-50%) translateY(80px);
-            background: #443e36; color: #FFF8E7; padding: 10px 20px; border-radius: 999px;
-            font-family: sans-serif; font-size: 13px; font-weight: 600; z-index: 400;
-            transition: transform 0.3s ease; white-space: nowrap;
+            position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(90px);
+            background: #fb6f92; color: #fff; padding: 10px 20px; border-radius: 999px;
+            font-size: 13px; font-weight: 600; z-index: 400; transition: transform 0.3s; white-space: nowrap;
         }
         #toast.show { transform: translateX(-50%) translateY(0); }
     </style>
@@ -104,7 +172,7 @@
 <body class="overflow-hidden">
 
     <a href="../index.html" id="back-btn">← Kembali</a>
-
+    <button id="music-toggle" title="Musik lo-fi">🎵</button>
     <div id="toast"></div>
 
     <div id="lightbox">
@@ -113,147 +181,265 @@
     </div>
 
     <!-- Start Overlay -->
-    <div id="start" class="w-full h-full flex bg-[#FFF8E7] overflow-hidden fixed inset-0 z-20 justify-center items-center flex-col gap-4">
-        <div style="font-family:'Pacifico',cursive;" class="text-2xl text-[#7a6a55]">2026</div>
-        <button onclick="startPage()" class="px-8 py-3 bg-[#F5E1A4] text-[#443e36] text-2xl rounded-md font-extrabold font-sans">
+    <div id="start" class="w-full h-full flex overflow-hidden fixed inset-0 z-20 justify-center items-center flex-col gap-4"
+         style="background: linear-gradient(160deg,#fff0f5,#ffd6e7);">
+        <div class="pacifico text-3xl text-[#fb6f92]">2026</div>
+        <button onclick="startPage()" class="px-8 py-3 bg-[#ff8fab] text-white text-2xl rounded-full font-bold shadow-lg" style="box-shadow:0 8px 22px rgba(251,111,146,.45)">
             START
         </button>
     </div>
 
-    <!-- Section 1: Happy Birthday -->
-    <div class="relative w-full min-h-screen flex justify-center items-center bg-[#fff3ce] flex-wrap overflow-hidden">
-        <div class="w-full md:w-1/2 z-10 flex flex-col justify-center items-center px-10 md:px-20 text-center py-16 md:py-0">
-            <div class="text-5xl font-extrabold mb-5 leading-loose" style="font-family:'Pacifico',cursive;" data-aos="fade-down" data-aos-duration="1000">
+    <!-- ===== Section 1: HERO ===== -->
+    <section class="relative w-full min-h-screen flex flex-col md:flex-row items-center overflow-hidden"
+             style="background: linear-gradient(160deg,#fff0f5 0%,#ffe0ec 50%,#ffd0e0 100%);">
+
+        <!-- Left: text + empty photo strip -->
+        <div class="w-full md:w-1/2 flex flex-col justify-center items-center text-center px-10 md:px-16 py-16 z-10">
+            <div class="pacifico text-5xl md:text-6xl text-[#fb6f92] mb-4" data-aos="fade-down" data-aos-duration="1000">
                 Happy Birthday
             </div>
-            <div class="font-sans text-[#443e36]" data-aos="zoom-in" data-aos-duration="1000">
-                <!-- Ganti teks ucapan ulang tahun 2026 di sini -->
-                Selamat ulang tahun, Diana. Satu tahun lagi berlalu, dan aku masih di sini — bersyukur bisa menjadi bagian dari hidupmu. Tahun ini semoga lebih indah dari sebelumnya.
-            </div>
-        </div>
-        <div class="w-full md:w-1/2 z-10 flex justify-center items-center relative h-[60vh] md:h-screen">
-            <!-- Ganti foto hero 2026 di bawah ini -->
-            <div class="foto1 top-[20%] left-[8%]" data-aos="fade-right" data-aos-duration="2000">
-                <img src="../asset/img/utama.jpg" alt="" class="w-full">
-            </div>
-            <div class="foto1 top-[12%] right-[8%] rotate-[-12deg]" data-aos="fade-left" data-aos-duration="2000">
-                <img src="../asset/img/ketiga.jpg" alt="" class="w-full">
-            </div>
-            <div class="foto1 top-[48%] left-[28%] rotate-[8deg]" data-aos="fade-up" data-aos-duration="2000">
-                <img src="../asset/img/kedua.jpg" alt="" class="w-full">
-            </div>
-        </div>
-        <img src="../asset/bg1.png" alt="" class="w-full absolute bottom-0 left-0 pointer-events-none" onerror="this.style.display='none'">
-    </div>
+            <!-- Ganti teks ucapan 2026 di sini -->
+            <p class="text-[#7a3b52] font-medium max-w-md leading-relaxed mb-8" data-aos="fade-up" data-aos-duration="1200">
+                Untuk Diana — di tahun yang baru ini, semoga kebahagiaan selalu menemukanmu. Halaman ini masih kosong, menunggu kita isi dengan kenangan-kenangan baru. 💕
+            </p>
 
-    <!-- Section 2: Love Letter -->
-    <div class="w-full min-h-screen py-16 flex flex-col justify-center items-center bg-[#fff3ce]">
-        <div class="px-8 md:px-10 max-w-2xl">
-            <div class="font-bold text-3xl mb-4 text-[#443e36]" style="font-family:'Pacifico',cursive;" data-aos="fade-down" data-aos-duration="1500">
-                I Love You
+            <!-- Empty photo placeholders — ganti src <img> untuk menambah foto -->
+            <div class="flex gap-4 justify-center" data-aos="zoom-in" data-aos-duration="1400">
+                <div class="polaroid w-24 md:w-28 rotate-[-8deg]">
+                    <div class="polaroid-empty">+</div>
+                </div>
+                <div class="polaroid w-24 md:w-28 rotate-[4deg] mt-4">
+                    <div class="polaroid-empty">+</div>
+                </div>
+                <div class="polaroid w-24 md:w-28 rotate-[-3deg]">
+                    <div class="polaroid-empty">+</div>
+                </div>
             </div>
-            <!-- Ganti isi surat cinta 2026 di bawah ini -->
-            <div class="font-serif font-bold mb-5 text-lg text-[#443e36]" data-aos="fade-right" data-aos-duration="1500">
+        </div>
+
+        <!-- Right: Spline flower -->
+        <div class="w-full md:w-1/2 h-[45vh] md:h-screen relative z-0">
+            <spline-viewer url="https://prod.spline.design/GKeXMIq-O6IlX04h/scene.splinecode" loading="lazy"></spline-viewer>
+        </div>
+    </section>
+
+    <!-- ===== Section 2: Love Letter ===== -->
+    <section class="w-full min-h-screen flex flex-col justify-center items-center py-20 px-6"
+             style="background: linear-gradient(180deg,#ffd0e0,#fff0f5);">
+        <div class="max-w-2xl bg-white/60 backdrop-blur rounded-3xl p-8 md:p-12 shadow-xl" style="box-shadow:0 20px 50px rgba(251,111,146,.18)">
+            <div class="pacifico text-4xl text-[#fb6f92] mb-6 text-center" data-aos="fade-down">I Love You</div>
+            <!-- Ganti isi surat cinta 2026 -->
+            <p class="text-[#7a3b52] font-medium text-lg leading-relaxed mb-5" data-aos="fade-up">
                 [ Isi surat cinta 2026 — akan diisi nanti ]
-            </div>
-            <div class="font-serif font-bold mb-5 text-lg text-[#443e36]" data-aos="fade-right" data-aos-duration="1500">
+            </p>
+            <p class="text-[#7a3b52] font-medium text-lg leading-relaxed mb-5" data-aos="fade-up">
                 [ Bagian 2 — akan diisi nanti ]
-            </div>
-            <div class="font-serif font-bold text-lg text-[#443e36]" data-aos="fade-right" data-aos-duration="1500">
+            </p>
+            <p class="text-[#7a3b52] font-medium text-lg leading-relaxed" data-aos="fade-up">
                 [ Bagian 3 — akan diisi nanti ]
-            </div>
+            </p>
         </div>
-    </div>
+    </section>
 
-    <!-- Section 3: Music + 3D -->
-    <div class="w-full flex justify-center flex-wrap">
-        <div class="w-full md:w-1/2 min-h-[50vh] bg-[#f5d7a4]">
-            <div id="container3D" data-aos="zoom-in" data-aos-duration="2000"></div>
-        </div>
-        <div class="w-full md:w-1/2 bg-[#ffeace] flex flex-col justify-center items-center py-12 px-8">
-            <div class="mb-6 font-extrabold text-4xl text-[#443e36] text-center" style="font-family:'Pacifico',cursive;" data-aos="fade-down" data-aos-duration="1500">
-                Lagu tahun ini
-            </div>
-            <!-- Ganti lagu 2026 di sini nanti -->
-            <div class="font-sans text-[#7a6a55] text-center text-sm" data-aos="fade-up" data-aos-duration="1500">
-                [ Lagu 2026 — akan ditambahkan nanti ]
-            </div>
-        </div>
-    </div>
+    <!-- ===== Section 3: GAME ===== -->
+    <section class="w-full min-h-screen flex flex-col justify-center items-center py-20 px-6"
+             style="background: linear-gradient(180deg,#fff0f5,#ffe0ec);">
+        <div class="pacifico text-4xl text-[#fb6f92] mb-2 text-center" data-aos="fade-down">Permainan Kita</div>
+        <p class="text-[#a86b80] font-medium mb-6 text-center" data-aos="fade-up">Temukan semua pasangan kartu yang sama 💞</p>
 
-    <!-- Section 4: Doa -->
-    <div class="w-full min-h-screen flex flex-col justify-center items-center bg-[#FFF8E7] py-16">
-        <div class="mb-8 font-extrabold text-4xl text-[#443e36]" style="font-family:'Pacifico',cursive;" data-aos="fade-down" data-aos-duration="1500">
-            Doaku Untukmu
-        </div>
-        <div id="draggable-scroll" class="overflow-x-auto snap-x snap-mandatory flex w-[90%] gap-4 no-scrollbar p-4">
-            <!-- Ganti isi kartu doa 2026 di bawah ini -->
-            <div class="flex-shrink-0 snap-center" data-aos="fade-up" data-aos-duration="1500">
-                <div class="flex flex-col py-4 items-center bg-[#f5d7a4] rounded-lg w-52 h-52 text-center shadow-lg shadow-[#a7916d]">
-                    <div class="font-bold m-2 text-[#443e36]">[ Doa 1 — akan diisi nanti ]</div>
-                </div>
-            </div>
-            <div class="flex-shrink-0 snap-center" data-aos="fade-up" data-aos-duration="1500">
-                <div class="flex flex-col py-4 items-center bg-[#ffeace] rounded-lg w-52 h-52 text-center shadow-lg shadow-[#8d8172]">
-                    <div class="font-bold m-2 text-[#443e36]">[ Doa 2 — akan diisi nanti ]</div>
-                </div>
-            </div>
-            <div class="flex-shrink-0 snap-center" data-aos="fade-up" data-aos-duration="1500">
-                <div class="flex flex-col py-4 items-center bg-[#f5d7a4] rounded-lg w-52 h-52 text-center shadow-lg shadow-[#a7916d]">
-                    <div class="font-bold m-2 text-[#443e36]">[ Doa 3 — akan diisi nanti ]</div>
-                </div>
-            </div>
-            <div class="flex-shrink-0 snap-center" data-aos="fade-up" data-aos-duration="1500">
-                <div class="flex flex-col py-4 items-center bg-[#ffeace] rounded-lg w-52 h-52 text-center shadow-lg shadow-[#8d8172]">
-                    <div class="font-bold m-2 text-[#443e36]">[ Doa 4 — akan diisi nanti ]</div>
-                </div>
-            </div>
-            <div class="flex-shrink-0 snap-center" data-aos="fade-up" data-aos-duration="1500">
-                <div class="flex flex-col py-4 items-center bg-[#f5d7a4] rounded-lg w-52 h-52 text-center shadow-lg shadow-[#a7916d]">
-                    <div class="font-bold m-2 text-[#443e36]">[ Doa 5 — akan diisi nanti ]</div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Section 5: Gallery + Upload -->
-    <div class="w-full flex flex-col items-center bg-[#fff3ce] relative pb-16">
-        <img src="../asset/bg2.png" alt="" class="w-full absolute top-0 left-0 pointer-events-none" onerror="this.style.display='none'">
-
-        <div class="my-12 font-extrabold text-4xl text-[#443e36] z-10" style="font-family:'Pacifico',cursive;" data-aos="fade-down" data-aos-duration="1500">
-            Galeri Foto 2026
+        <div class="flex gap-6 items-center mb-6 text-[#7a3b52] font-semibold" data-aos="fade-up">
+            <span>Langkah: <span id="game-moves">0</span></span>
+            <span>Cocok: <span id="game-matched">0</span>/8</span>
+            <button id="game-restart" class="px-4 py-2 bg-[#ff8fab] text-white rounded-full text-sm font-bold hover:bg-[#fb6f92] transition-colors">Main Lagi</button>
         </div>
 
-        <!-- Upload Zone -->
-        <div class="z-10 w-[90%] max-w-xl mb-6">
-            <div id="upload-zone" class="rounded-2xl bg-[#fffbf0] p-8 text-center cursor-pointer">
+        <div class="game-grid" id="game-grid" data-aos="zoom-in"></div>
+
+        <div id="game-win" class="mt-6 text-center text-[#fb6f92] font-bold text-lg hidden">
+            🎉 Kamu menang! Sama seperti kita — selalu menemukan satu sama lain. 💕
+        </div>
+    </section>
+
+    <!-- ===== Section 4: Doa ===== -->
+    <section class="w-full min-h-screen flex flex-col justify-center items-center py-20"
+             style="background: linear-gradient(180deg,#ffe0ec,#ffd0e0);">
+        <div class="pacifico text-4xl text-[#fb6f92] mb-8 text-center" data-aos="fade-down">Doaku Untukmu</div>
+
+        <div class="flex items-center gap-3 w-full max-w-5xl px-4">
+            <button class="doa-arrow" onclick="scrollDoa(-1)">‹</button>
+            <div class="doa-track no-scrollbar flex-1" id="doa-track">
+                <!-- Ganti isi kartu doa 2026 -->
+                <div class="doa-card" style="background:#ffd6e7;color:#7a3b52;">[ Doa 1 — akan diisi nanti ]</div>
+                <div class="doa-card" style="background:#ffc2d4;color:#6b2c44;">[ Doa 2 — akan diisi nanti ]</div>
+                <div class="doa-card" style="background:#ffd6e7;color:#7a3b52;">[ Doa 3 — akan diisi nanti ]</div>
+                <div class="doa-card" style="background:#ffc2d4;color:#6b2c44;">[ Doa 4 — akan diisi nanti ]</div>
+                <div class="doa-card" style="background:#ffd6e7;color:#7a3b52;">[ Doa 5 — akan diisi nanti ]</div>
+            </div>
+            <button class="doa-arrow" onclick="scrollDoa(1)">›</button>
+        </div>
+    </section>
+
+    <!-- ===== Section 5: Gallery + Upload (kosong) ===== -->
+    <section class="w-full flex flex-col items-center py-20 px-4" style="background: linear-gradient(180deg,#ffd0e0,#fff0f5);">
+        <div class="pacifico text-4xl text-[#fb6f92] mb-2 text-center" data-aos="fade-down">Galeri Foto 2026</div>
+        <p class="text-[#a86b80] font-medium mb-8 text-center" data-aos="fade-up">Mulai kumpulkan kenangan baru kita ✨</p>
+
+        <div class="w-full max-w-xl mb-6">
+            <div id="upload-zone" class="rounded-2xl bg-white/70 p-8 text-center cursor-pointer">
                 <input type="file" id="file-input" accept="image/*" multiple>
                 <div class="text-4xl mb-2">📷</div>
-                <p class="font-sans font-bold text-[#443e36] text-sm">Klik atau drag foto ke sini</p>
-                <p class="font-sans text-[#a08060] text-xs mt-1">Bisa pilih banyak foto sekaligus • Tersimpan di cloud</p>
+                <p class="font-bold text-[#6b2c44] text-sm">Klik atau drag foto ke sini</p>
+                <p class="text-[#a86b80] text-xs mt-1">Bisa pilih banyak foto sekaligus • Tersimpan di cloud</p>
             </div>
-
             <div id="upload-progress-list" class="mt-3 flex flex-col gap-2"></div>
-
             <div class="flex justify-between items-center mt-3 px-1">
-                <span id="photo-count" class="font-sans text-xs text-[#7a6a55]">Memuat galeri...</span>
-                <button onclick="confirmClearAll()" class="font-sans text-xs text-[#c9a96e] hover:text-red-500 transition-colors">Hapus semua</button>
+                <span id="photo-count" class="text-xs text-[#a86b80]">Memuat galeri...</span>
+                <button onclick="confirmClearAll()" class="text-xs text-[#ffafcc] hover:text-[#fb6f92] transition-colors">Hapus semua</button>
             </div>
         </div>
 
-        <div id="gallery-grid" class="flex flex-wrap justify-center gap-6 z-10 w-full px-4 max-w-6xl"></div>
+        <div id="gallery-grid" class="flex flex-wrap justify-center gap-6 w-full max-w-6xl"></div>
 
-        <div id="gallery-empty" class="z-10 flex-col items-center text-center text-[#c9a96e] mt-4 hidden">
-            <div class="text-5xl mb-3">🖼️</div>
-            <p class="font-sans font-semibold text-sm">Belum ada foto. Upload foto pertamamu!</p>
+        <div id="gallery-empty" class="flex-col items-center text-center text-[#ffafcc] mt-4 hidden">
+            <div class="text-5xl mb-3">🌸</div>
+            <p class="font-semibold text-sm">Belum ada foto. Upload foto pertamamu!</p>
         </div>
-
-        <div id="gallery-loading" class="z-10 flex flex-col items-center text-center text-[#c9a96e] mt-4">
+        <div id="gallery-loading" class="flex flex-col items-center text-center text-[#ffafcc] mt-4">
             <div class="text-3xl animate-spin mb-2">⏳</div>
-            <p class="font-sans text-sm">Memuat foto...</p>
+            <p class="text-sm">Memuat foto...</p>
         </div>
-    </div>
+    </section>
 
+    <!-- ===== Plain scripts: game, doa, music, hearts ===== -->
+    <script>
+        // ---------- Floating hearts ----------
+        (function () {
+            const emojis = ['💕','🌸','💗','🌷','💞'];
+            for (let i = 0; i < 14; i++) {
+                const h = document.createElement('div');
+                h.className = 'heart-float';
+                h.textContent = emojis[i % emojis.length];
+                h.style.left = Math.random() * 100 + 'vw';
+                h.style.animationDuration = (8 + Math.random() * 10) + 's';
+                h.style.animationDelay = (Math.random() * 12) + 's';
+                h.style.fontSize = (14 + Math.random() * 16) + 'px';
+                document.body.appendChild(h);
+            }
+        })();
+
+        // ---------- Memory match game ----------
+        const GAME_EMOJIS = ['💕','🌹','🧸','🎀','💌','🌸','🍓','⭐'];
+        let firstCard = null, lock = false, moves = 0, matched = 0;
+
+        function buildGame() {
+            const grid = document.getElementById('game-grid');
+            moves = 0; matched = 0; firstCard = null; lock = false;
+            document.getElementById('game-moves').textContent = '0';
+            document.getElementById('game-matched').textContent = '0';
+            document.getElementById('game-win').classList.add('hidden');
+            grid.innerHTML = '';
+
+            const deck = [...GAME_EMOJIS, ...GAME_EMOJIS].sort(() => Math.random() - 0.5);
+            deck.forEach(emoji => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.dataset.emoji = emoji;
+                card.innerHTML = `
+                    <div class="card-inner">
+                        <div class="card-face card-front">💗</div>
+                        <div class="card-face card-back">${emoji}</div>
+                    </div>`;
+                card.addEventListener('click', () => flipCard(card));
+                grid.appendChild(card);
+            });
+        }
+
+        function flipCard(card) {
+            if (lock || card.classList.contains('flipped') || card.classList.contains('matched')) return;
+            card.classList.add('flipped');
+
+            if (!firstCard) { firstCard = card; return; }
+
+            moves++;
+            document.getElementById('game-moves').textContent = moves;
+
+            if (firstCard.dataset.emoji === card.dataset.emoji) {
+                firstCard.classList.add('matched');
+                card.classList.add('matched');
+                firstCard = null;
+                matched++;
+                document.getElementById('game-matched').textContent = matched;
+                if (matched === GAME_EMOJIS.length) {
+                    document.getElementById('game-win').classList.remove('hidden');
+                    new JSConfetti().addConfetti({ emojis: ['💕','🌸','💗','🌹','✨'] });
+                }
+            } else {
+                lock = true;
+                const a = firstCard; firstCard = null;
+                setTimeout(() => {
+                    a.classList.remove('flipped');
+                    card.classList.remove('flipped');
+                    lock = false;
+                }, 800);
+            }
+        }
+        document.getElementById('game-restart').addEventListener('click', buildGame);
+        buildGame();
+
+        // ---------- Doa smooth scroll ----------
+        const doaTrack = document.getElementById('doa-track');
+        window.scrollDoa = dir => doaTrack.scrollBy({ left: dir * 260, behavior: 'smooth' });
+
+        let dDown = false, dStartX, dScroll;
+        doaTrack.addEventListener('pointerdown', e => { dDown = true; doaTrack.classList.add('grabbing'); dStartX = e.clientX; dScroll = doaTrack.scrollLeft; doaTrack.setPointerCapture(e.pointerId); });
+        doaTrack.addEventListener('pointermove', e => { if (!dDown) return; doaTrack.scrollLeft = dScroll - (e.clientX - dStartX); });
+        const endDrag = () => { dDown = false; doaTrack.classList.remove('grabbing'); };
+        doaTrack.addEventListener('pointerup', endDrag);
+        doaTrack.addEventListener('pointercancel', endDrag);
+
+        // ---------- Lo-fi music ----------
+        const lofi = new Audio('../asset/lofi.mp3');
+        lofi.loop = true; lofi.volume = 0.35;
+        const musicBtn = document.getElementById('music-toggle');
+        musicBtn.addEventListener('click', () => {
+            if (lofi.paused) { lofi.play().catch(() => {}); musicBtn.classList.add('playing'); }
+            else { lofi.pause(); musicBtn.classList.remove('playing'); }
+        });
+
+        // ---------- Lightbox ----------
+        window.openLightbox = src => { document.getElementById('lightbox-img').src = src; document.getElementById('lightbox').classList.add('active'); };
+        window.closeLightbox = () => document.getElementById('lightbox').classList.remove('active');
+        document.getElementById('lightbox').addEventListener('click', e => { if (e.target.id === 'lightbox') window.closeLightbox(); });
+
+        // ---------- AOS + Start ----------
+        AOS.init({ once: true, offset: 80 });
+
+        window.startPage = () => {
+            const startEl = document.getElementById('start');
+            startEl.querySelector('button').style.display = 'none';
+            let count = 5;
+            const countEl = document.createElement('div');
+            countEl.className = 'text-8xl font-extrabold text-[#fb6f92]';
+            startEl.appendChild(countEl);
+            const iv = setInterval(() => {
+                countEl.textContent = count--;
+                if (count < 0) {
+                    clearInterval(iv);
+                    startEl.style.display = 'none';
+                    document.body.classList.remove('overflow-hidden');
+                    document.getElementById('back-btn').style.display = 'block';
+                    musicBtn.style.display = 'block';
+                    new JSConfetti().addConfetti({ confettiColors: ['#ff8fab','#fb6f92','#ffd6e7','#ffc2d4','#ff5d8f'] });
+                    new Audio('../asset/confetti.mp3').play().catch(() => {});
+                    lofi.play().then(() => musicBtn.classList.add('playing')).catch(() => {});
+                    AOS.refresh();
+                    if (window.loadGallery) window.loadGallery();
+                }
+            }, 1000);
+        };
+    </script>
+
+    <!-- ===== Module: Cloudinary upload + Firestore gallery ===== -->
     <script type="module">
         import { initializeApp }   from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
         import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, query, where, serverTimestamp }
@@ -262,50 +448,35 @@
 
         const app = initializeApp(dbConfig);
         const db  = getFirestore(app);
-        const CLD  = cloudinaryConfig;
+        const CLD = cloudinaryConfig;
         const YEAR = '2026';
 
         function showToast(msg) {
             const t = document.getElementById('toast');
-            t.textContent = msg;
-            t.classList.add('show');
+            t.textContent = msg; t.classList.add('show');
             setTimeout(() => t.classList.remove('show'), 3000);
         }
 
-        window.openLightbox = src => {
-            document.getElementById('lightbox-img').src = src;
-            document.getElementById('lightbox').classList.add('active');
-        };
-        window.closeLightbox = () => document.getElementById('lightbox').classList.remove('active');
-        document.getElementById('lightbox').addEventListener('click', e => {
-            if (e.target === document.getElementById('lightbox')) window.closeLightbox();
-        });
-
         async function loadGallery() {
-            const grid    = document.getElementById('gallery-grid');
-            const empty   = document.getElementById('gallery-empty');
+            const grid = document.getElementById('gallery-grid');
+            const empty = document.getElementById('gallery-empty');
             const loading = document.getElementById('gallery-loading');
-            const count   = document.getElementById('photo-count');
-
+            const count = document.getElementById('photo-count');
             try {
                 const snap = await getDocs(query(collection(db, 'photos'), where('year', '==', YEAR)));
                 loading.style.display = 'none';
                 grid.innerHTML = '';
-
                 const docs = snap.docs.sort((a, b) => (b.data().uploadedAt?.seconds || 0) - (a.data().uploadedAt?.seconds || 0));
-
-                if (docs.length === 0) {
-                    empty.classList.remove('hidden'); empty.classList.add('flex');
-                    count.textContent = '0 foto'; return;
-                }
+                if (docs.length === 0) { empty.classList.remove('hidden'); empty.classList.add('flex'); count.textContent = '0 foto'; return; }
                 empty.classList.add('hidden');
                 count.textContent = `${docs.length} foto`;
                 docs.forEach(d => addCard(grid, d.data().url, d.id, d.data().publicId, d.data().name));
             } catch (err) {
-                loading.innerHTML = '<p class="font-sans text-sm text-red-400">Gagal memuat foto. Cek koneksi.</p>';
+                loading.innerHTML = '<p class="text-sm text-red-400">Gagal memuat foto. Cek koneksi.</p>';
                 console.error(err);
             }
         }
+        window.loadGallery = loadGallery;
 
         function addCard(grid, url, docId, publicId, name) {
             const card = document.createElement('div');
@@ -325,36 +496,31 @@
                 const total = document.getElementById('gallery-grid').querySelectorAll('.gallery-card').length;
                 document.getElementById('photo-count').textContent = `${total} foto`;
                 if (total === 0) { const e = document.getElementById('gallery-empty'); e.classList.remove('hidden'); e.classList.add('flex'); }
-                showToast('Foto dihapus dari galeri');
+                showToast('Foto dihapus');
             } catch (err) { showToast('Gagal menghapus'); btn.disabled = false; console.error(err); }
         };
 
         window.confirmClearAll = async () => {
-            if (!confirm('Hapus SEMUA foto 2026 dari galeri?')) return;
+            if (!confirm('Hapus SEMUA foto 2026?')) return;
             const snap = await getDocs(query(collection(db, 'photos'), where('year', '==', YEAR)));
             await Promise.all(snap.docs.map(d => deleteDoc(doc(db, 'photos', d.id))));
             await loadGallery();
             showToast('Semua foto dihapus');
         };
 
-        function handleFiles(files) {
-            Array.from(files).filter(f => f.type.startsWith('image/')).forEach(uploadFile);
-        }
+        function handleFiles(files) { Array.from(files).filter(f => f.type.startsWith('image/')).forEach(uploadFile); }
 
         function uploadFile(file) {
-            const list   = document.getElementById('upload-progress-list');
-            const itemId = `p${Date.now()}${Math.random().toString(36).slice(2)}`;
+            const list = document.getElementById('upload-progress-list');
+            const id = `p${Date.now()}${Math.random().toString(36).slice(2)}`;
             const item = document.createElement('div');
-            item.id = itemId;
-            item.className = 'bg-[#fffbf0] rounded-lg p-3';
+            item.className = 'bg-white/70 rounded-lg p-3';
             item.innerHTML = `
                 <div class="flex justify-between mb-1">
-                    <span class="font-sans text-xs text-[#443e36] truncate max-w-[80%]">${file.name}</span>
-                    <span class="font-sans text-xs text-[#a08060]" id="${itemId}-pct">0%</span>
+                    <span class="text-xs text-[#6b2c44] truncate max-w-[80%]">${file.name}</span>
+                    <span class="text-xs text-[#a86b80]" id="${id}-pct">0%</span>
                 </div>
-                <div class="bg-[#f5d7a4] rounded-full overflow-hidden">
-                    <div class="progress-bar" id="${itemId}-bar" style="width:0%"></div>
-                </div>`;
+                <div class="bg-[#ffd6e7] rounded-full overflow-hidden"><div class="progress-bar" id="${id}-bar" style="width:0%"></div></div>`;
             list.appendChild(item);
 
             const fd = new FormData();
@@ -367,16 +533,14 @@
             xhr.upload.onprogress = e => {
                 if (!e.lengthComputable) return;
                 const pct = Math.round((e.loaded / e.total) * 100);
-                document.getElementById(`${itemId}-bar`).style.width = `${pct}%`;
-                document.getElementById(`${itemId}-pct`).textContent  = `${pct}%`;
+                document.getElementById(`${id}-bar`).style.width = `${pct}%`;
+                document.getElementById(`${id}-pct`).textContent = `${pct}%`;
             };
             xhr.onload = async () => {
                 item.remove();
                 if (xhr.status !== 200) { showToast(`Gagal upload: ${file.name}`); return; }
                 const res = JSON.parse(xhr.responseText);
-                const docRef = await addDoc(collection(db, 'photos'), {
-                    url: res.secure_url, publicId: res.public_id, name: file.name, year: YEAR, uploadedAt: serverTimestamp()
-                });
+                const docRef = await addDoc(collection(db, 'photos'), { url: res.secure_url, publicId: res.public_id, name: file.name, year: YEAR, uploadedAt: serverTimestamp() });
                 const grid = document.getElementById('gallery-grid');
                 document.getElementById('gallery-empty').classList.add('hidden');
                 addCard(grid, res.secure_url, docRef.id, res.public_id, file.name);
@@ -389,88 +553,9 @@
 
         document.getElementById('file-input').addEventListener('change', e => handleFiles(e.target.files));
         const zone = document.getElementById('upload-zone');
-        zone.addEventListener('dragover',  e => { e.preventDefault(); zone.classList.add('dragover'); });
+        zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('dragover'); });
         zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
         zone.addEventListener('drop', e => { e.preventDefault(); zone.classList.remove('dragover'); handleFiles(e.dataTransfer.files); });
-
-        // AOS init — body is the scroller
-        AOS.init({ once: true, offset: 80 });
-
-        window.startPage = () => {
-            const startEl = document.getElementById('start');
-            startEl.querySelector('button').style.display = 'none';
-            let count = 5;
-            const countEl = document.createElement('div');
-            countEl.className = 'text-8xl font-extrabold text-[#443e36]';
-            startEl.appendChild(countEl);
-
-            const iv = setInterval(() => {
-                countEl.textContent = count--;
-                if (count < 0) {
-                    clearInterval(iv);
-                    startEl.style.display = 'none';
-                    document.body.classList.remove('overflow-hidden');
-                    document.getElementById('back-btn').style.display = 'block';
-                    new JSConfetti().addConfetti({ confettiColors: ['#f5d7a4','#ffeace','#e8c47a','#fff3ce','#443e36'] });
-                    new Audio('../asset/confetti.mp3').play().catch(() => {});
-                    const m = new Audio('../asset/musik.mp3'); m.loop = true; m.volume = 0.4; m.play().catch(() => {});
-                    AOS.refresh();
-                    loadGallery();
-                }
-            }, 1000);
-        };
-
-        // Drag-scroll doa cards
-        const slider = document.getElementById('draggable-scroll');
-        let isDown = false, startX, scrollLeft, velocity = 0, target, raf;
-        slider.addEventListener('mousedown', e => { isDown = true; startX = e.pageX - slider.offsetLeft; scrollLeft = slider.scrollLeft; target = scrollLeft; velocity = 0; cancelAnimationFrame(raf); });
-        slider.addEventListener('mouseleave', () => { if (isDown) { isDown = false; momentum(); } });
-        slider.addEventListener('mouseup', () => { if (isDown) { isDown = false; momentum(); } });
-        slider.addEventListener('mousemove', e => { if (!isDown) return; e.preventDefault(); const x = e.pageX - slider.offsetLeft; target = scrollLeft - (x - startX) * 2; velocity = target - slider.scrollLeft; });
-        function momentum() { velocity *= 0.95; target -= velocity; slider.scrollLeft += (target - slider.scrollLeft) * 0.1; if (Math.abs(velocity) > 0.5) raf = requestAnimationFrame(momentum); }
-    </script>
-
-    <!-- 3D dino model -->
-    <script type="module">
-        import * as THREE from 'https://cdn.skypack.dev/three@0.129.0/build/three.module.js';
-        import { OrbitControls } from 'https://cdn.skypack.dev/three@0.129.0/examples/jsm/controls/OrbitControls.js';
-        import { GLTFLoader } from 'https://cdn.skypack.dev/three@0.129.0/examples/jsm/loaders/GLTFLoader.js';
-
-        const container = document.getElementById('container3D');
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
-        camera.position.set(30, 10, 0);
-
-        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-        renderer.setSize(container.clientWidth, container.clientHeight);
-        container.appendChild(renderer.domElement);
-
-        scene.add(new THREE.AmbientLight(0xffffff, 1.2));
-        const dir = new THREE.DirectionalLight(0xffffff, 1);
-        dir.position.set(5, 5, 5);
-        scene.add(dir);
-
-        const controls = new OrbitControls(camera, renderer.domElement);
-        controls.enableDamping = true;
-        controls.dampingFactor = 0.1;
-
-        new GLTFLoader().load('../models/dino/scene.gltf', gltf => {
-            gltf.scene.scale.set(1.5, 1.5, 1.5);
-            scene.add(gltf.scene);
-            animate();
-        }, undefined, err => console.error('Error loading model:', err));
-
-        window.addEventListener('resize', () => {
-            camera.aspect = container.clientWidth / container.clientHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(container.clientWidth, container.clientHeight);
-        });
-
-        function animate() {
-            requestAnimationFrame(animate);
-            controls.update();
-            renderer.render(scene, camera);
-        }
     </script>
 </body>
 </html>
