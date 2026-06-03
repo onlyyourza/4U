@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css" />
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <title>4 YOU — Diana</title>
+    <style>
+        * { user-select: none; }
+        body {
+            background-color: #FFF8E7;
+            font-family: 'Pacifico', cursive;
+        }
+        .year-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+        .year-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(165, 130, 80, 0.3);
+        }
+        .heart {
+            animation: heartbeat 1.5s ease-in-out infinite;
+        }
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+        .float {
+            animation: floating 3s ease-in-out infinite;
+        }
+        @keyframes floating {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+        }
+        ::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+
+<body class="min-h-screen flex flex-col justify-center items-center overflow-hidden px-4">
+
+    <!-- Decorative top -->
+    <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-[#f5d7a4] via-[#ffeace] to-[#f5d7a4]"></div>
+
+    <!-- Title -->
+    <div class="text-center mb-4" data-aos="fade-down" data-aos-duration="1000">
+        <div class="heart inline-block text-5xl mb-2">🌸</div>
+        <h1 class="text-4xl md:text-6xl text-[#443e36]" style="font-family: 'Pacifico', cursive;">
+            4 YOU, Diana
+        </h1>
+        <p class="font-sans font-semibold text-[#7a6a55] mt-3 text-sm md:text-base">
+            Pilih tahun untuk membuka kenangan kita ✨
+        </p>
+    </div>
+
+    <!-- Year Cards -->
+    <div class="flex flex-col md:flex-row gap-8 mt-8" data-aos="fade-up" data-aos-duration="1200" data-aos-delay="200">
+
+        <!-- 2025 Card -->
+        <a href="2025/index.html" class="year-card bg-[#fff3ce] border-2 border-[#f5d7a4] rounded-2xl p-8 md:p-10 text-center shadow-lg shadow-[#d4b483]/30 w-64 md:w-72">
+            <div class="float text-5xl mb-4">🎂</div>
+            <div class="text-5xl md:text-6xl font-bold text-[#443e36] mb-3" style="font-family: 'Pacifico', cursive;">2025</div>
+            <p class="font-sans text-[#7a6a55] text-sm font-medium">
+                Kenangan & ucapan ulang tahun tahun lalu
+            </p>
+            <div class="mt-4 inline-block bg-[#f5d7a4] text-[#443e36] font-sans font-bold text-xs px-4 py-2 rounded-full">
+                Buka →
+            </div>
+        </a>
+
+        <!-- 2026 Card -->
+        <a href="2026/index.html" class="year-card bg-[#ffeace] border-2 border-[#e8c47a] rounded-2xl p-8 md:p-10 text-center shadow-lg shadow-[#d4b483]/30 w-64 md:w-72 relative">
+            <div class="absolute -top-3 -right-3 bg-[#443e36] text-[#FFF8E7] text-xs font-sans font-bold px-3 py-1 rounded-full">
+                NEW ✨
+            </div>
+            <div class="float text-5xl mb-4" style="animation-delay: 0.5s;">🌹</div>
+            <div class="text-5xl md:text-6xl font-bold text-[#443e36] mb-3" style="font-family: 'Pacifico', cursive;">2026</div>
+            <p class="font-sans text-[#7a6a55] text-sm font-medium">
+                Perayaan ulang tahun & kenangan baru
+            </p>
+            <div class="mt-4 inline-block bg-[#e8c47a] text-[#443e36] font-sans font-bold text-xs px-4 py-2 rounded-full">
+                Buka →
+            </div>
+        </a>
+
+    </div>
+
+    <!-- Bottom quote -->
+    <div class="mt-12 text-center text-[#a08060] font-sans text-xs" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="500">
+        <p>"Every year with you is my favorite year."</p>
+    </div>
+
+    <!-- Decorative bottom -->
+    <div class="absolute bottom-0 left-0 w-full h-2 bg-gradient-to-r from-[#f5d7a4] via-[#ffeace] to-[#f5d7a4]"></div>
+
+    <script>
+        AOS.init({ once: true });
+    </script>
+</body>
+</html>

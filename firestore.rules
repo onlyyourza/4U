@@ -1,0 +1,16 @@
+// ============================================================
+//  Firestore Security Rules
+//  Copy-paste ke: Google Console → Firestore → Rules tab
+// ============================================================
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /photos/{docId} {
+      allow read:   if true;
+      allow create: if request.resource.data.keys().hasAll(['url','publicId','name','year','uploadedAt'])
+                    && request.resource.data.year in ['2025','2026'];
+      allow delete: if true;
+    }
+  }
+}
