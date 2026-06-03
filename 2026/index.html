@@ -11,35 +11,39 @@
     <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
     <title>4 YOU — 2026</title>
     <style>
-        * { user-select: none; }
-
-        #content {
-            scroll-snap-type: y mandatory;
-            overflow-y: scroll;
-            height: 100vh;
+        * {
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
         }
-        .section { scroll-snap-align: start; }
+
+        html { scroll-behavior: smooth; }
+        body { margin: 0; padding: 0; }
 
         .foto1 {
             position: absolute;
-            width: 140px;
-            border: 6px solid white;
-            border-radius: 8px;
-            box-shadow: 4px 4px 12px rgba(0,0,0,0.15);
+            width: 35%;
+            max-width: 200px;
+            padding: 8px 8px 30px 8px;
+            background-color: #ffffff;
+            box-shadow: 4px 4px 14px rgba(0, 0, 0, 0.18);
         }
 
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #FFF8E7; }
-        ::-webkit-scrollbar-thumb { background: #c9a96e; border-radius: 3px; }
-        * { scrollbar-width: thin; scrollbar-color: #c9a96e #FFF8E7; }
+        #container3D { width: 100%; height: 100%; min-height: 50vh; }
+        #container3D canvas { width: 100% !important; height: 100% !important; }
+
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: #f0f0f0; }
+        ::-webkit-scrollbar-thumb { background: #c8a97e; border-radius: 10px; border: 2px solid #f0f0f0; }
+        ::-webkit-scrollbar-thumb:hover { background: #a68256; }
+        * { scrollbar-width: thin; scrollbar-color: #c8a97e #f0f0f0; }
 
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
         #back-btn {
             position: fixed;
-            top: 16px;
-            left: 16px;
+            top: 16px; left: 16px;
             z-index: 100;
             background: #f5d7a4;
             color: #443e36;
@@ -48,7 +52,6 @@
             font-family: sans-serif;
             font-weight: bold;
             font-size: 13px;
-            cursor: pointer;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
             transition: background 0.2s;
             display: none;
@@ -56,102 +59,43 @@
         }
         #back-btn:hover { background: #e8c47a; }
 
-        /* Upload zone */
         #upload-zone {
             border: 3px dashed #c9a96e;
             transition: border-color 0.2s, background 0.2s;
             position: relative;
         }
-        #upload-zone.dragover {
-            border-color: #443e36;
-            background: #fff3ce;
-        }
+        #upload-zone.dragover { border-color: #443e36; background: #fff3ce; }
         #upload-zone input[type="file"] {
-            position: absolute;
-            inset: 0;
-            opacity: 0;
-            cursor: pointer;
-            width: 100%;
-            height: 100%;
+            position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
         }
 
-        /* Progress bar */
-        .progress-bar {
-            height: 4px;
-            background: #c9a96e;
-            border-radius: 2px;
-            transition: width 0.3s ease;
-        }
+        .progress-bar { height: 4px; background: #c9a96e; border-radius: 2px; transition: width 0.3s ease; }
 
-        /* Gallery card */
-        .gallery-card {
-            animation: fadeInUp 0.4s ease forwards;
-            position: relative;
-        }
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(16px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
+        .gallery-card { animation: fadeInUp 0.4s ease forwards; position: relative; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
         .delete-btn {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            background: rgba(220, 80, 80, 0.85);
-            color: white;
-            border: none;
-            width: 26px;
-            height: 26px;
-            border-radius: 50%;
-            font-size: 14px;
-            cursor: pointer;
-            opacity: 0;
-            transition: opacity 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            position: absolute; top: 8px; right: 8px;
+            background: rgba(220, 80, 80, 0.85); color: white; border: none;
+            width: 26px; height: 26px; border-radius: 50%; font-size: 14px; cursor: pointer;
+            opacity: 0; transition: opacity 0.2s; display: flex; align-items: center; justify-content: center;
             font-family: sans-serif;
         }
         .gallery-card:hover .delete-btn { opacity: 1; }
 
-        /* Lightbox */
         #lightbox {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.88);
-            z-index: 300;
-            justify-content: center;
-            align-items: center;
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.88);
+            z-index: 300; justify-content: center; align-items: center;
         }
         #lightbox.active { display: flex; }
         #lightbox img { max-width: 90vw; max-height: 90vh; border-radius: 12px; }
-        #lightbox-close {
-            position: absolute;
-            top: 20px;
-            right: 24px;
-            color: white;
-            font-size: 32px;
-            cursor: pointer;
-            font-family: sans-serif;
-            line-height: 1;
-        }
+        #lightbox-close { position: absolute; top: 20px; right: 24px; color: white; font-size: 32px; cursor: pointer; font-family: sans-serif; line-height: 1; }
 
-        /* Toast */
         #toast {
-            position: fixed;
-            bottom: 24px;
-            left: 50%;
+            position: fixed; bottom: 24px; left: 50%;
             transform: translateX(-50%) translateY(80px);
-            background: #443e36;
-            color: #FFF8E7;
-            padding: 10px 20px;
-            border-radius: 999px;
-            font-family: sans-serif;
-            font-size: 13px;
-            font-weight: 600;
-            z-index: 400;
-            transition: transform 0.3s ease;
-            white-space: nowrap;
+            background: #443e36; color: #FFF8E7; padding: 10px 20px; border-radius: 999px;
+            font-family: sans-serif; font-size: 13px; font-weight: 600; z-index: 400;
+            transition: transform 0.3s ease; white-space: nowrap;
         }
         #toast.show { transform: translateX(-50%) translateY(0); }
     </style>
@@ -161,163 +105,166 @@
 
     <a href="../index.html" id="back-btn">← Kembali</a>
 
-    <!-- Toast -->
     <div id="toast"></div>
 
-    <!-- Lightbox -->
     <div id="lightbox">
         <span id="lightbox-close" onclick="closeLightbox()">✕</span>
         <img id="lightbox-img" src="" alt="">
     </div>
 
     <!-- Start Overlay -->
-    <div id="start" class="w-full h-full flex bg-[#FFF8E7] overflow-hidden absolute z-20 justify-center items-center flex-col gap-4">
+    <div id="start" class="w-full h-full flex bg-[#FFF8E7] overflow-hidden fixed inset-0 z-20 justify-center items-center flex-col gap-4">
         <div style="font-family:'Pacifico',cursive;" class="text-2xl text-[#7a6a55]">2026</div>
         <button onclick="startPage()" class="px-8 py-3 bg-[#F5E1A4] text-[#443e36] text-2xl rounded-md font-extrabold font-sans">
             START
         </button>
     </div>
 
-    <div class="w-full h-screen flex flex-col" id="content">
-
-        <!-- Section 1: Happy Birthday -->
-        <div class="section relative w-full md:min-h-screen flex justify-center bg-[#fff3ce] flex-wrap snap-start">
-            <div class="max-w-full md:w-1/2 z-10 flex flex-col justify-center items-center px-12 md:px-20 text-center py-16 md:py-0">
-                <div class="text-5xl font-extrabold mb-5 leading-loose" style="font-family:'Pacifico',cursive;" data-aos="fade-down" data-aos-duration="1000">
-                    Happy Birthday
-                </div>
-                <div class="font-sans text-[#443e36]" data-aos="zoom-in" data-aos-duration="1200">
-                    <!-- Ganti teks ucapan ulang tahun 2026 di sini -->
-                    Selamat ulang tahun, Diana. Satu tahun lagi berlalu, dan aku masih di sini — bersyukur bisa menjadi bagian dari hidupmu. Tahun ini semoga lebih indah dari sebelumnya.
-                </div>
+    <!-- Section 1: Happy Birthday -->
+    <div class="relative w-full min-h-screen flex justify-center items-center bg-[#fff3ce] flex-wrap overflow-hidden">
+        <div class="w-full md:w-1/2 z-10 flex flex-col justify-center items-center px-10 md:px-20 text-center py-16 md:py-0">
+            <div class="text-5xl font-extrabold mb-5 leading-loose" style="font-family:'Pacifico',cursive;" data-aos="fade-down" data-aos-duration="1000">
+                Happy Birthday
             </div>
-
-            <div class="w-full md:w-1/2 z-10 flex justify-center items-center relative mb-96 mt-20 md:m-0">
-                <!-- Ganti foto hero 2026 di bawah ini -->
-                <div class="foto1 top-[25%] left-[0%]" data-aos="fade-right" data-aos-duration="3000">
-                    <img src="../asset/img/utama.jpg" alt="" class="w-full" onerror="this.src='https://placehold.co/140x180/fff3ce/443e36?text=Foto+1'">
-                </div>
-                <div class="foto1 top-[15%] right-[10%] rotate-[-15deg]" data-aos="fade-left" data-aos-duration="3000">
-                    <img src="../asset/img/ketiga.jpg" alt="" class="w-full" onerror="this.src='https://placehold.co/140x180/ffeace/443e36?text=Foto+2'">
-                </div>
-                <div class="foto1 md:top-[40%] top-[40%] left-[30%] rotate-[10deg]" data-aos="fade-up" data-aos-duration="3000">
-                    <img src="../asset/img/kedua.jpg" alt="" class="w-full" onerror="this.src='https://placehold.co/140x180/f5d7a4/443e36?text=Foto+3'">
-                </div>
-            </div>
-            <img src="../asset/bg1.png" alt="" class="w-full absolute" onerror="this.style.display='none'">
-        </div>
-
-        <!-- Section 2: Love Letter -->
-        <div class="section w-full py-10 flex flex-col justify-center items-center flex-wrap snap-start bg-[#fff3ce]">
-            <div class="m-8 md:m-10 max-w-2xl">
-                <div class="font-bold text-3xl mb-4" style="font-family:'Pacifico',cursive;" data-aos="fade-down" data-aos-duration="3000">
-                    I Love You
-                </div>
-                <!-- Ganti isi surat cinta 2026 di bawah ini -->
-                <div class="font-serif font-bold mb-5 text-lg text-[#443e36]" data-aos="fade-right" data-aos-duration="3000">
-                    [ Isi surat cinta 2026 — akan diisi nanti ]
-                </div>
-                <div class="font-serif font-bold mb-5 text-lg text-[#443e36]" data-aos="fade-right" data-aos-duration="3000">
-                    [ Bagian 2 — akan diisi nanti ]
-                </div>
-                <div class="font-serif font-bold mb-5 text-lg text-[#443e36]" data-aos="fade-right" data-aos-duration="3000">
-                    [ Bagian 3 — akan diisi nanti ]
-                </div>
+            <div class="font-sans text-[#443e36]" data-aos="zoom-in" data-aos-duration="1000">
+                <!-- Ganti teks ucapan ulang tahun 2026 di sini -->
+                Selamat ulang tahun, Diana. Satu tahun lagi berlalu, dan aku masih di sini — bersyukur bisa menjadi bagian dari hidupmu. Tahun ini semoga lebih indah dari sebelumnya.
             </div>
         </div>
-
-        <!-- Section 3: Doa -->
-        <div class="section w-full min-h-screen flex flex-col justify-center items-center snap-start bg-[#FFF8E7]">
-            <div class="my-10 font-extrabold text-4xl" style="font-family:'Pacifico',cursive;" data-aos="fade-down" data-aos-duration="1000">
-                Doaku Untukmu
+        <div class="w-full md:w-1/2 z-10 flex justify-center items-center relative h-[60vh] md:h-screen">
+            <!-- Ganti foto hero 2026 di bawah ini -->
+            <div class="foto1 top-[20%] left-[8%]" data-aos="fade-right" data-aos-duration="2000">
+                <img src="../asset/img/utama.jpg" alt="" class="w-full">
             </div>
-            <div id="draggable-scroll" class="overflow-x-auto snap-x snap-mandatory flex w-[90%] gap-4 no-scrollbar p-4">
-                <!-- Ganti isi kartu doa 2026 di bawah ini -->
-                <div class="flex-shrink-0 snap-center" data-aos="fade-up" data-aos-duration="3000">
-                    <div class="flex flex-col py-4 items-center bg-[#f5d7a4] rounded-lg w-52 h-52 text-center shadow-lg shadow-[#a7916d]">
-                        <div class="font-bold m-2">[ Doa 1 — akan diisi nanti ]</div>
-                    </div>
+            <div class="foto1 top-[12%] right-[8%] rotate-[-12deg]" data-aos="fade-left" data-aos-duration="2000">
+                <img src="../asset/img/ketiga.jpg" alt="" class="w-full">
+            </div>
+            <div class="foto1 top-[48%] left-[28%] rotate-[8deg]" data-aos="fade-up" data-aos-duration="2000">
+                <img src="../asset/img/kedua.jpg" alt="" class="w-full">
+            </div>
+        </div>
+        <img src="../asset/bg1.png" alt="" class="w-full absolute bottom-0 left-0 pointer-events-none" onerror="this.style.display='none'">
+    </div>
+
+    <!-- Section 2: Love Letter -->
+    <div class="w-full min-h-screen py-16 flex flex-col justify-center items-center bg-[#fff3ce]">
+        <div class="px-8 md:px-10 max-w-2xl">
+            <div class="font-bold text-3xl mb-4 text-[#443e36]" style="font-family:'Pacifico',cursive;" data-aos="fade-down" data-aos-duration="1500">
+                I Love You
+            </div>
+            <!-- Ganti isi surat cinta 2026 di bawah ini -->
+            <div class="font-serif font-bold mb-5 text-lg text-[#443e36]" data-aos="fade-right" data-aos-duration="1500">
+                [ Isi surat cinta 2026 — akan diisi nanti ]
+            </div>
+            <div class="font-serif font-bold mb-5 text-lg text-[#443e36]" data-aos="fade-right" data-aos-duration="1500">
+                [ Bagian 2 — akan diisi nanti ]
+            </div>
+            <div class="font-serif font-bold text-lg text-[#443e36]" data-aos="fade-right" data-aos-duration="1500">
+                [ Bagian 3 — akan diisi nanti ]
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 3: Music + 3D -->
+    <div class="w-full flex justify-center flex-wrap">
+        <div class="w-full md:w-1/2 min-h-[50vh] bg-[#f5d7a4]">
+            <div id="container3D" data-aos="zoom-in" data-aos-duration="2000"></div>
+        </div>
+        <div class="w-full md:w-1/2 bg-[#ffeace] flex flex-col justify-center items-center py-12 px-8">
+            <div class="mb-6 font-extrabold text-4xl text-[#443e36] text-center" style="font-family:'Pacifico',cursive;" data-aos="fade-down" data-aos-duration="1500">
+                Lagu tahun ini
+            </div>
+            <!-- Ganti lagu 2026 di sini nanti -->
+            <div class="font-sans text-[#7a6a55] text-center text-sm" data-aos="fade-up" data-aos-duration="1500">
+                [ Lagu 2026 — akan ditambahkan nanti ]
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 4: Doa -->
+    <div class="w-full min-h-screen flex flex-col justify-center items-center bg-[#FFF8E7] py-16">
+        <div class="mb-8 font-extrabold text-4xl text-[#443e36]" style="font-family:'Pacifico',cursive;" data-aos="fade-down" data-aos-duration="1500">
+            Doaku Untukmu
+        </div>
+        <div id="draggable-scroll" class="overflow-x-auto snap-x snap-mandatory flex w-[90%] gap-4 no-scrollbar p-4">
+            <!-- Ganti isi kartu doa 2026 di bawah ini -->
+            <div class="flex-shrink-0 snap-center" data-aos="fade-up" data-aos-duration="1500">
+                <div class="flex flex-col py-4 items-center bg-[#f5d7a4] rounded-lg w-52 h-52 text-center shadow-lg shadow-[#a7916d]">
+                    <div class="font-bold m-2 text-[#443e36]">[ Doa 1 — akan diisi nanti ]</div>
                 </div>
-                <div class="flex-shrink-0 snap-center" data-aos="fade-down" data-aos-duration="3000">
-                    <div class="flex flex-col py-4 items-center bg-[#ffeace] rounded-lg w-52 h-52 text-center shadow-lg shadow-[#8d8172]">
-                        <div class="font-bold m-2">[ Doa 2 — akan diisi nanti ]</div>
-                    </div>
+            </div>
+            <div class="flex-shrink-0 snap-center" data-aos="fade-up" data-aos-duration="1500">
+                <div class="flex flex-col py-4 items-center bg-[#ffeace] rounded-lg w-52 h-52 text-center shadow-lg shadow-[#8d8172]">
+                    <div class="font-bold m-2 text-[#443e36]">[ Doa 2 — akan diisi nanti ]</div>
                 </div>
-                <div class="flex-shrink-0 snap-center" data-aos="fade-up" data-aos-duration="3000">
-                    <div class="flex flex-col py-4 items-center bg-[#f5d7a4] rounded-lg w-52 h-52 text-center shadow-lg shadow-[#a7916d]">
-                        <div class="font-bold m-2">[ Doa 3 — akan diisi nanti ]</div>
-                    </div>
+            </div>
+            <div class="flex-shrink-0 snap-center" data-aos="fade-up" data-aos-duration="1500">
+                <div class="flex flex-col py-4 items-center bg-[#f5d7a4] rounded-lg w-52 h-52 text-center shadow-lg shadow-[#a7916d]">
+                    <div class="font-bold m-2 text-[#443e36]">[ Doa 3 — akan diisi nanti ]</div>
                 </div>
-                <div class="flex-shrink-0 snap-center" data-aos="fade-down" data-aos-duration="3000">
-                    <div class="flex flex-col py-4 items-center bg-[#ffeace] rounded-lg w-52 h-52 text-center shadow-lg shadow-[#8d8172]">
-                        <div class="font-bold m-2">[ Doa 4 — akan diisi nanti ]</div>
-                    </div>
+            </div>
+            <div class="flex-shrink-0 snap-center" data-aos="fade-up" data-aos-duration="1500">
+                <div class="flex flex-col py-4 items-center bg-[#ffeace] rounded-lg w-52 h-52 text-center shadow-lg shadow-[#8d8172]">
+                    <div class="font-bold m-2 text-[#443e36]">[ Doa 4 — akan diisi nanti ]</div>
                 </div>
-                <div class="flex-shrink-0 snap-center" data-aos="fade-up" data-aos-duration="3000">
-                    <div class="flex flex-col py-4 items-center bg-[#f5d7a4] rounded-lg w-52 h-52 text-center shadow-lg shadow-[#a7916d]">
-                        <div class="font-bold m-2">[ Doa 5 — akan diisi nanti ]</div>
-                    </div>
+            </div>
+            <div class="flex-shrink-0 snap-center" data-aos="fade-up" data-aos-duration="1500">
+                <div class="flex flex-col py-4 items-center bg-[#f5d7a4] rounded-lg w-52 h-52 text-center shadow-lg shadow-[#a7916d]">
+                    <div class="font-bold m-2 text-[#443e36]">[ Doa 5 — akan diisi nanti ]</div>
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- Section 4: Gallery + Upload -->
-        <div class="section w-full flex flex-col items-center snap-start bg-[#fff3ce] relative pb-16">
-            <img src="../asset/bg2.png" alt="" class="w-full absolute top-0" onerror="this.style.display='none'">
+    <!-- Section 5: Gallery + Upload -->
+    <div class="w-full flex flex-col items-center bg-[#fff3ce] relative pb-16">
+        <img src="../asset/bg2.png" alt="" class="w-full absolute top-0 left-0 pointer-events-none" onerror="this.style.display='none'">
 
-            <div class="my-10 font-extrabold text-4xl z-10 mb-6" style="font-family:'Pacifico',cursive;" data-aos="fade-down" data-aos-duration="3000">
-                Galeri Foto 2026
+        <div class="my-12 font-extrabold text-4xl text-[#443e36] z-10" style="font-family:'Pacifico',cursive;" data-aos="fade-down" data-aos-duration="1500">
+            Galeri Foto 2026
+        </div>
+
+        <!-- Upload Zone -->
+        <div class="z-10 w-[90%] max-w-xl mb-6">
+            <div id="upload-zone" class="rounded-2xl bg-[#fffbf0] p-8 text-center cursor-pointer">
+                <input type="file" id="file-input" accept="image/*" multiple>
+                <div class="text-4xl mb-2">📷</div>
+                <p class="font-sans font-bold text-[#443e36] text-sm">Klik atau drag foto ke sini</p>
+                <p class="font-sans text-[#a08060] text-xs mt-1">Bisa pilih banyak foto sekaligus • Tersimpan di cloud</p>
             </div>
 
-            <!-- Upload Zone -->
-            <div class="z-10 w-[90%] max-w-xl mb-6" data-aos="fade-up" data-aos-duration="1000">
-                <div id="upload-zone" class="rounded-2xl bg-[#fffbf0] p-8 text-center cursor-pointer">
-                    <input type="file" id="file-input" accept="image/*" multiple>
-                    <div class="text-4xl mb-2">📷</div>
-                    <p class="font-sans font-bold text-[#443e36] text-sm">Klik atau drag foto ke sini</p>
-                    <p class="font-sans text-[#a08060] text-xs mt-1">Bisa pilih banyak foto sekaligus • Tersimpan di cloud</p>
-                </div>
+            <div id="upload-progress-list" class="mt-3 flex flex-col gap-2"></div>
 
-                <!-- Upload progress list -->
-                <div id="upload-progress-list" class="mt-3 flex flex-col gap-2"></div>
-
-                <div class="flex justify-between items-center mt-3 px-1">
-                    <span id="photo-count" class="font-sans text-xs text-[#7a6a55]">Memuat galeri...</span>
-                    <button onclick="confirmClearAll()" class="font-sans text-xs text-[#c9a96e] hover:text-red-500 transition-colors">Hapus semua</button>
-                </div>
-            </div>
-
-            <!-- Gallery Grid -->
-            <div id="gallery-grid" class="flex flex-wrap justify-center gap-5 z-10 w-full px-4"></div>
-
-            <!-- Empty state -->
-            <div id="gallery-empty" class="z-10 flex-col items-center text-center text-[#c9a96e] mt-4 hidden">
-                <div class="text-5xl mb-3">🖼️</div>
-                <p class="font-sans font-semibold text-sm">Belum ada foto. Upload foto pertamamu!</p>
-            </div>
-
-            <!-- Loading state -->
-            <div id="gallery-loading" class="z-10 flex flex-col items-center text-center text-[#c9a96e] mt-4">
-                <div class="text-3xl animate-spin mb-2">⏳</div>
-                <p class="font-sans text-sm">Memuat foto...</p>
+            <div class="flex justify-between items-center mt-3 px-1">
+                <span id="photo-count" class="font-sans text-xs text-[#7a6a55]">Memuat galeri...</span>
+                <button onclick="confirmClearAll()" class="font-sans text-xs text-[#c9a96e] hover:text-red-500 transition-colors">Hapus semua</button>
             </div>
         </div>
 
+        <div id="gallery-grid" class="flex flex-wrap justify-center gap-6 z-10 w-full px-4 max-w-6xl"></div>
+
+        <div id="gallery-empty" class="z-10 flex-col items-center text-center text-[#c9a96e] mt-4 hidden">
+            <div class="text-5xl mb-3">🖼️</div>
+            <p class="font-sans font-semibold text-sm">Belum ada foto. Upload foto pertamamu!</p>
+        </div>
+
+        <div id="gallery-loading" class="z-10 flex flex-col items-center text-center text-[#c9a96e] mt-4">
+            <div class="text-3xl animate-spin mb-2">⏳</div>
+            <p class="font-sans text-sm">Memuat foto...</p>
+        </div>
     </div>
 
     <script type="module">
         import { initializeApp }   from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-        import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, query, where, orderBy, serverTimestamp }
+        import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, query, where, serverTimestamp }
             from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
         import dbConfig, { cloudinaryConfig } from '../config.js';
 
         const app = initializeApp(dbConfig);
         const db  = getFirestore(app);
-
         const CLD  = cloudinaryConfig;
         const YEAR = '2026';
 
-        // ---- Toast ----
         function showToast(msg) {
             const t = document.getElementById('toast');
             t.textContent = msg;
@@ -325,7 +272,6 @@
             setTimeout(() => t.classList.remove('show'), 3000);
         }
 
-        // ---- Lightbox ----
         window.openLightbox = src => {
             document.getElementById('lightbox-img').src = src;
             document.getElementById('lightbox').classList.add('active');
@@ -335,7 +281,6 @@
             if (e.target === document.getElementById('lightbox')) window.closeLightbox();
         });
 
-        // ---- Load Gallery ----
         async function loadGallery() {
             const grid    = document.getElementById('gallery-grid');
             const empty   = document.getElementById('gallery-empty');
@@ -343,21 +288,19 @@
             const count   = document.getElementById('photo-count');
 
             try {
-                const q    = query(collection(db, 'photos'), where('year', '==', YEAR));
-                const snap = await getDocs(q);
-
+                const snap = await getDocs(query(collection(db, 'photos'), where('year', '==', YEAR)));
                 loading.style.display = 'none';
                 grid.innerHTML = '';
 
-                if (snap.empty) {
+                const docs = snap.docs.sort((a, b) => (b.data().uploadedAt?.seconds || 0) - (a.data().uploadedAt?.seconds || 0));
+
+                if (docs.length === 0) {
                     empty.classList.remove('hidden'); empty.classList.add('flex');
                     count.textContent = '0 foto'; return;
                 }
-
                 empty.classList.add('hidden');
-                count.textContent = `${snap.size} foto`;
-                snap.forEach(d => addCard(grid, d.data().url, d.id, d.data().publicId, d.data().name));
-
+                count.textContent = `${docs.length} foto`;
+                docs.forEach(d => addCard(grid, d.data().url, d.id, d.data().publicId, d.data().name));
             } catch (err) {
                 loading.innerHTML = '<p class="font-sans text-sm text-red-400">Gagal memuat foto. Cek koneksi.</p>';
                 console.error(err);
@@ -366,17 +309,13 @@
 
         function addCard(grid, url, docId, publicId, name) {
             const card = document.createElement('div');
-            card.className = 'gallery-card bg-white p-2 rounded-xl max-w-[260px] h-fit';
+            card.className = 'gallery-card bg-white p-2 rounded-xl max-w-[280px] h-fit';
             card.innerHTML = `
-                <img src="${url}" alt="${name || ''}"
-                    class="rounded-lg w-full cursor-pointer object-cover max-h-[220px]"
-                    onclick="openLightbox('${url}')">
-                <button class="delete-btn" onclick="deletePhoto('${docId}','${publicId}',this)">✕</button>
-            `;
+                <img src="${url}" alt="${name || ''}" class="rounded-lg w-full cursor-pointer object-cover max-h-[240px]" onclick="openLightbox('${url}')">
+                <button class="delete-btn" onclick="deletePhoto('${docId}','${publicId}',this)">✕</button>`;
             grid.appendChild(card);
         }
 
-        // ---- Delete (Firestore only — Cloudinary free plan tidak support delete via API) ----
         window.deletePhoto = async (docId, publicId, btn) => {
             if (!confirm('Hapus foto ini?')) return;
             btn.disabled = true;
@@ -385,16 +324,9 @@
                 btn.closest('.gallery-card').remove();
                 const total = document.getElementById('gallery-grid').querySelectorAll('.gallery-card').length;
                 document.getElementById('photo-count').textContent = `${total} foto`;
-                if (total === 0) {
-                    const empty = document.getElementById('gallery-empty');
-                    empty.classList.remove('hidden'); empty.classList.add('flex');
-                }
+                if (total === 0) { const e = document.getElementById('gallery-empty'); e.classList.remove('hidden'); e.classList.add('flex'); }
                 showToast('Foto dihapus dari galeri');
-            } catch (err) {
-                showToast('Gagal menghapus');
-                btn.disabled = false;
-                console.error(err);
-            }
+            } catch (err) { showToast('Gagal menghapus'); btn.disabled = false; console.error(err); }
         };
 
         window.confirmClearAll = async () => {
@@ -405,7 +337,6 @@
             showToast('Semua foto dihapus');
         };
 
-        // ---- Upload via Cloudinary ----
         function handleFiles(files) {
             Array.from(files).filter(f => f.type.startsWith('image/')).forEach(uploadFile);
         }
@@ -413,7 +344,6 @@
         function uploadFile(file) {
             const list   = document.getElementById('upload-progress-list');
             const itemId = `p${Date.now()}${Math.random().toString(36).slice(2)}`;
-
             const item = document.createElement('div');
             item.id = itemId;
             item.className = 'bg-[#fffbf0] rounded-lg p-3';
@@ -434,37 +364,25 @@
 
             const xhr = new XMLHttpRequest();
             xhr.open('POST', `https://api.cloudinary.com/v1_1/${CLD.cloudName}/image/upload`);
-
             xhr.upload.onprogress = e => {
                 if (!e.lengthComputable) return;
                 const pct = Math.round((e.loaded / e.total) * 100);
                 document.getElementById(`${itemId}-bar`).style.width = `${pct}%`;
                 document.getElementById(`${itemId}-pct`).textContent  = `${pct}%`;
             };
-
             xhr.onload = async () => {
                 item.remove();
                 if (xhr.status !== 200) { showToast(`Gagal upload: ${file.name}`); return; }
-
                 const res = JSON.parse(xhr.responseText);
                 const docRef = await addDoc(collection(db, 'photos'), {
-                    url:        res.secure_url,
-                    publicId:   res.public_id,
-                    name:       file.name,
-                    year:       YEAR,
-                    uploadedAt: serverTimestamp()
+                    url: res.secure_url, publicId: res.public_id, name: file.name, year: YEAR, uploadedAt: serverTimestamp()
                 });
-
-                const grid  = document.getElementById('gallery-grid');
-                const empty = document.getElementById('gallery-empty');
-                empty.classList.add('hidden');
+                const grid = document.getElementById('gallery-grid');
+                document.getElementById('gallery-empty').classList.add('hidden');
                 addCard(grid, res.secure_url, docRef.id, res.public_id, file.name);
-
-                const total = grid.querySelectorAll('.gallery-card').length;
-                document.getElementById('photo-count').textContent = `${total} foto`;
+                document.getElementById('photo-count').textContent = `${grid.querySelectorAll('.gallery-card').length} foto`;
                 showToast('Foto berhasil diupload ✓');
             };
-
             xhr.onerror = () => { item.remove(); showToast(`Gagal upload: ${file.name}`); };
             xhr.send(fd);
         }
@@ -475,7 +393,9 @@
         zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
         zone.addEventListener('drop', e => { e.preventDefault(); zone.classList.remove('dragover'); handleFiles(e.dataTransfer.files); });
 
-        // ---- Start ----
+        // AOS init — body is the scroller
+        AOS.init({ once: true, offset: 80 });
+
         window.startPage = () => {
             const startEl = document.getElementById('start');
             startEl.querySelector('button').style.display = 'none';
@@ -489,22 +409,68 @@
                 if (count < 0) {
                     clearInterval(iv);
                     startEl.style.display = 'none';
+                    document.body.classList.remove('overflow-hidden');
                     document.getElementById('back-btn').style.display = 'block';
                     new JSConfetti().addConfetti({ confettiColors: ['#f5d7a4','#ffeace','#e8c47a','#fff3ce','#443e36'] });
                     new Audio('../asset/confetti.mp3').play().catch(() => {});
                     const m = new Audio('../asset/musik.mp3'); m.loop = true; m.volume = 0.4; m.play().catch(() => {});
-                    AOS.init({ once: true });
+                    AOS.refresh();
                     loadGallery();
                 }
             }, 1000);
         };
 
-        // ---- Drag scroll doa ----
-        const draggable = document.getElementById('draggable-scroll');
-        let isDragging = false, startX = 0, scrollLeft = 0, velX = 0, lastX = 0;
-        draggable.addEventListener('mousedown', e => { isDragging = true; startX = e.pageX - draggable.offsetLeft; scrollLeft = draggable.scrollLeft; lastX = e.pageX; velX = 0; });
-        draggable.addEventListener('mousemove', e => { if (!isDragging) return; e.preventDefault(); velX = e.pageX - lastX; lastX = e.pageX; draggable.scrollLeft = scrollLeft - (e.pageX - draggable.offsetLeft - startX); });
-        ['mouseup','mouseleave'].forEach(evt => draggable.addEventListener(evt, () => { isDragging = false; let m = velX; const s = () => { if (Math.abs(m) < 0.5) return; draggable.scrollLeft -= m; m *= 0.95; requestAnimationFrame(s); }; requestAnimationFrame(s); }));
+        // Drag-scroll doa cards
+        const slider = document.getElementById('draggable-scroll');
+        let isDown = false, startX, scrollLeft, velocity = 0, target, raf;
+        slider.addEventListener('mousedown', e => { isDown = true; startX = e.pageX - slider.offsetLeft; scrollLeft = slider.scrollLeft; target = scrollLeft; velocity = 0; cancelAnimationFrame(raf); });
+        slider.addEventListener('mouseleave', () => { if (isDown) { isDown = false; momentum(); } });
+        slider.addEventListener('mouseup', () => { if (isDown) { isDown = false; momentum(); } });
+        slider.addEventListener('mousemove', e => { if (!isDown) return; e.preventDefault(); const x = e.pageX - slider.offsetLeft; target = scrollLeft - (x - startX) * 2; velocity = target - slider.scrollLeft; });
+        function momentum() { velocity *= 0.95; target -= velocity; slider.scrollLeft += (target - slider.scrollLeft) * 0.1; if (Math.abs(velocity) > 0.5) raf = requestAnimationFrame(momentum); }
+    </script>
+
+    <!-- 3D dino model -->
+    <script type="module">
+        import * as THREE from 'https://cdn.skypack.dev/three@0.129.0/build/three.module.js';
+        import { OrbitControls } from 'https://cdn.skypack.dev/three@0.129.0/examples/jsm/controls/OrbitControls.js';
+        import { GLTFLoader } from 'https://cdn.skypack.dev/three@0.129.0/examples/jsm/loaders/GLTFLoader.js';
+
+        const container = document.getElementById('container3D');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
+        camera.position.set(30, 10, 0);
+
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        renderer.setSize(container.clientWidth, container.clientHeight);
+        container.appendChild(renderer.domElement);
+
+        scene.add(new THREE.AmbientLight(0xffffff, 1.2));
+        const dir = new THREE.DirectionalLight(0xffffff, 1);
+        dir.position.set(5, 5, 5);
+        scene.add(dir);
+
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.1;
+
+        new GLTFLoader().load('../models/dino/scene.gltf', gltf => {
+            gltf.scene.scale.set(1.5, 1.5, 1.5);
+            scene.add(gltf.scene);
+            animate();
+        }, undefined, err => console.error('Error loading model:', err));
+
+        window.addEventListener('resize', () => {
+            camera.aspect = container.clientWidth / container.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.clientWidth, container.clientHeight);
+        });
+
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update();
+            renderer.render(scene, camera);
+        }
     </script>
 </body>
 </html>
