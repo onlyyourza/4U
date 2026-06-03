@@ -15,25 +15,15 @@
     <style>
         * { user-select: none; }
 
-        html {
-            scroll-snap-type: y mandatory;
-            overflow-y: scroll;
-            height: 100%;
-        }
-
-        body {
-            height: 100%;
-        }
+        body { overflow: hidden; height: 100vh; }
 
         #content {
-            scroll-snap-type: y mandatory;
-            overflow-y: scroll;
             height: 100vh;
+            overflow-y: scroll;
+            scroll-snap-type: y mandatory;
         }
 
-        .section {
-            scroll-snap-align: start;
-        }
+        .section { scroll-snap-align: start; }
 
         .foto1 {
             position: absolute;
@@ -43,19 +33,10 @@
             box-shadow: 4px 4px 12px rgba(0,0,0,0.15);
         }
 
-        .foto2 {
-            width: 220px;
-        }
+        .foto2 { width: 220px; }
 
-        #container3D {
-            width: 100%;
-            height: 100%;
-        }
-
-        #container3D canvas {
-            width: 100% !important;
-            height: 100% !important;
-        }
+        #container3D { width: 100%; height: 100%; min-height: 300px; }
+        #container3D canvas { width: 100% !important; height: 100% !important; }
 
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: #FFF8E7; }
@@ -65,15 +46,12 @@
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-        /* Back button */
         #back-btn {
             position: fixed;
-            top: 16px;
-            left: 16px;
+            top: 16px; left: 16px;
             z-index: 100;
             background: #f5d7a4;
             color: #443e36;
-            border: none;
             padding: 8px 16px;
             border-radius: 999px;
             font-family: sans-serif;
@@ -83,94 +61,88 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
             transition: background 0.2s;
             display: none;
+            text-decoration: none;
         }
         #back-btn:hover { background: #e8c47a; }
     </style>
 </head>
 
-<body class="overflow-hidden">
-
-    <!-- Back button (shown after start) -->
+<body>
     <a href="../index.html" id="back-btn">← Kembali</a>
 
     <!-- Start Overlay -->
-    <div id="start" class="w-full h-full flex bg-[#FFF8E7] overflow-hidden absolute z-20 justify-center items-center text-[#443e36] font-extrabold text-8xl">
-        <div class="flex flex-col items-center gap-4">
-            <div class="font-sans text-base font-semibold text-[#7a6a55]" style="font-family: 'Pacifico', cursive;">2025</div>
-            <button onclick="start()" class="px-6 py-3 bg-[#F5E1A4] text-[#443e36] text-2xl rounded-md flex justify-center items-center font-extrabold font-sans">
-                START
-            </button>
-        </div>
+    <div id="start" class="w-full h-full flex bg-[#FFF8E7] overflow-hidden absolute z-20 justify-center items-center flex-col gap-4">
+        <div style="font-family:'Pacifico',cursive;" class="text-2xl text-[#7a6a55]">2025</div>
+        <button onclick="start()" class="px-6 py-3 bg-[#F5E1A4] text-[#443e36] text-2xl rounded-md font-extrabold font-sans">
+            START
+        </button>
     </div>
 
-    <div class="w-full h-screen flex flex-col" id="content">
+    <div id="content">
 
         <!-- Section 1: Happy Birthday -->
-        <div class="section relative w-full md:min-h-screen flex justify-center bg-[#fff3ce] flex-wrap snap-start">
-            <div class="max-w-full md:w-1/2 z-10 flex flex-col justify-center items-center px-20 text-center">
-                <div class="text-5xl font-mono font-extrabold mb-5 leading-loose" style="font-family: 'Pacifico', cursive;" data-aos="fade-down" data-aos-duration="1000">
+        <div class="section relative w-full min-h-screen flex justify-center bg-[#fff3ce] flex-wrap snap-start">
+            <div class="max-w-full md:w-1/2 z-10 flex flex-col justify-center items-center px-12 md:px-20 text-center py-16 md:py-0">
+                <div class="text-5xl font-extrabold mb-5 leading-loose" style="font-family:'Pacifico',cursive;" data-aos="fade-down" data-aos-duration="1000">
                     Happy Birthday
                 </div>
-                <div class="font-sans" data-aos="zoom-in" data-aos-duration="1000">
+                <div class="font-sans text-[#443e36]" data-aos="zoom-in" data-aos-duration="1000">
                     Selamat ulang tahun, Diana. Di hari spesialmu ini, aku ingin mempersembahkan sesuatu yang sederhana namun penuh makna. Website ini aku buat sebagai ruang kecil yang akan selalu menyimpan kenangan-kenangan indah kita — tempat di mana tawa kita, doa-doa yang kita panjatkan, dan cinta yang tak pernah habis bisa hidup selamanya.
                 </div>
             </div>
-
             <div class="w-full md:w-1/2 z-10 flex justify-center items-center relative mb-96 mt-20 md:m-0">
                 <div class="foto1 top-[25%] left-[0%]" data-aos="fade-right" data-aos-duration="3000">
-                    <img src="../asset/img/utama.jpg" alt="" class="w-full">
+                    <img src="../asset/img/IMG-20250609-WA0011.jpg" alt="" class="w-full">
                 </div>
                 <div class="foto1 top-[15%] right-[10%] rotate-[-15deg]" data-aos="fade-left" data-aos-duration="3000">
-                    <img src="../asset/img/ketiga.jpg" alt="" class="w-full">
+                    <img src="../asset/img/IMG-20250609-WA0012.jpg" alt="" class="w-full">
                 </div>
                 <div class="foto1 md:top-[40%] top-[40%] left-[30%] rotate-[10deg]" data-aos="fade-up" data-aos-duration="3000">
-                    <img src="../asset/img/kedua.jpg" alt="" class="w-full">
+                    <img src="../asset/img/IMG-20250609-WA0013.jpg" alt="" class="w-full">
                 </div>
             </div>
-            <img src="../asset/bg1.png" alt="" class="w-full absolute" data-aos="fade-down" data-aos-duration="1000">
+            <img src="../asset/bg1.png" alt="" class="w-full absolute bottom-0" onerror="this.style.display='none'">
         </div>
 
         <!-- Section 2: Love Letter -->
-        <div class="section w-full py-10 flex flex-col justify-center items-center flex-wrap snap-start bg-[#fff3ce]">
-            <div class="m-10">
-                <div class="font-bold text-3xl font-mono mb-2" style="font-family: 'Pacifico', cursive;" data-aos="fade-down" data-aos-duration="3000">
+        <div class="section w-full min-h-screen py-10 flex flex-col justify-center items-center snap-start bg-[#fff3ce]">
+            <div class="m-8 md:m-10 max-w-2xl">
+                <div class="font-bold text-3xl mb-4 text-[#443e36]" style="font-family:'Pacifico',cursive;">
                     I Love You
                 </div>
-                <div class="font-serif font-bold mb-5 text-lg" data-aos="fade-right" data-aos-duration="3000">
+                <div class="font-serif font-bold mb-5 text-lg text-[#443e36]">
                     Hari ini ulang tahun Diana —
                     dan seperti setiap tahun, aku nggak cuma ngerayain Diana bertambah usia, tapi juga bersyukur karena Diana pernah (dan masih) jadi bagian dari hariku.
                 </div>
-                <div class="font-serif font-bold mb-5 text-lg" data-aos="fade-right" data-aos-duration="3000">
+                <div class="font-serif font-bold mb-5 text-lg text-[#443e36]">
                     Semoga di umur baru ini, semua doa-doa yang Diana simpan dalam diam bisa satu per satu datang.
                     Semoga Diana sehat, dikuatkan hatinya, dan dikelilingi kasih sayang yang tulus, dari mana pun itu datang.
                 </div>
-                <div class="font-serif font-bold mb-5 text-lg" data-aos="fade-right" data-aos-duration="3000">
+                <div class="font-serif font-bold mb-5 text-lg text-[#443e36]">
                     Dan, ada satu hal yang selalu aneh tapi nyata: Setiap kali aku dengar 2 lagu ini pasti langsung teringat diana, aku tidak tau itu lagu favoritnya diana atau bukan tapi karena Diana, lagu itu jadi salah satu lagu yang paling berkesan buatku.
                 </div>
-                <div class="font-serif font-bold mb-1 text-lg" data-aos="fade-right" data-aos-duration="3000">
-                    "Excuse me if I spoke too soon
-                    My eyes have always followed you around the room..."
+                <div class="font-serif font-bold mb-1 text-lg text-[#443e36]">
+                    "Excuse me if I spoke too soon<br>
+                    My eyes have always followed you around the room..."<br>
                     — If I Had a Gun
                 </div>
-                <div class="font-serif font-bold mb-5 text-md" data-aos="fade-right" data-aos-duration="3000">
+                <div class="font-serif font-bold mb-5 text-md text-[#443e36]">
                     Kalimat itu selalu nyangkut. Karena ya... sejak awal, entah gimana caranya, mataku memang selalu nyari Diana duluan.
                     Dan tanpa Diana sadari, Diana udah jadi seseorang yang aku sayangi dan kagumi diam-diam.
                 </div>
-                <div class="font-serif font-bold mb-1 text-lg" data-aos="fade-right" data-aos-duration="3000">
-                    "She says that I'm crazy, but I don't let it faze me
-                    Taste me, baby, take me as you please…"
+                <div class="font-serif font-bold mb-1 text-lg text-[#443e36]">
+                    "She says that I'm crazy, but I don't let it faze me<br>
+                    Taste me, baby, take me as you please…"<br>
                     — Take Me As You Please
                 </div>
-                <div class="font-serif font-bold mb-5 text-md" data-aos="fade-right" data-aos-duration="3000">
+                <div class="font-serif font-bold mb-5 text-md text-[#443e36]">
                     Aku nggak pernah nuntut banyak dari Diana.
                     Aku cuma pengen jadi diri sendiri, dan diterima. Apa adanya. Sama seperti aku nerima Diana.
                 </div>
-            </div>
-            <div class="m-8">
-                <div class="font-serif font-bold mb-5 text-lg" data-aos="fade-right" data-aos-duration="3000">
+                <div class="font-serif font-bold mb-5 text-lg text-[#443e36]">
                     Nggak banyak yang bisa aku kasih hari ini, tapi aku selalu berusaha jadi diri sendiri di depan Diana — dan berharap itu cukup.
                 </div>
-                <div class="font-serif font-bold mb-5 text-lg" data-aos="fade-right" data-aos-duration="3000">
+                <div class="font-serif font-bold mb-5 text-lg text-[#443e36]">
                     Selamat ulang tahun, sayang. Mari kita buat lebih banyak kenangan, tawa, dan mimpi bersama.
                     Di hari bahagiamu ini, semoga semua cinta yang kamu berikan ke dunia kembali padamu dengan berkali lipat.
                 </div>
@@ -178,23 +150,23 @@
         </div>
 
         <!-- Section 3: Music -->
-        <div class="section w-full flex justify-center flex-wrap snap-start">
-            <div class="w-full md:w-1/2 min-h-[50vh] bg-[#f5d7a4]">
-                <div id="container3D" class="w-full h-full" data-aos="zoom-in" data-aos-duration="3000"></div>
+        <div class="section w-full min-h-screen flex justify-center flex-wrap snap-start">
+            <div class="w-full md:w-1/2 min-h-[50vh] bg-[#f5d7a4] flex items-center justify-center">
+                <div id="container3D" class="w-full h-full"></div>
             </div>
-            <div class="w-full md:w-1/2 bg-[#ffeace] flex flex-col justify-center items-center">
-                <div class="my-10 font-extrabold text-4xl font-mono" style="font-family: 'Pacifico', cursive;" data-aos="fade-down" data-aos-duration="2000">
+            <div class="w-full md:w-1/2 bg-[#ffeace] flex flex-col justify-center items-center py-10">
+                <div class="my-6 font-extrabold text-4xl text-[#443e36]" style="font-family:'Pacifico',cursive;">
                     2 lagu ini
                 </div>
-                <div class="foto2 mb-10 relative group" data-aos="fade-left" data-aos-duration="3000">
-                    <img src="../asset/album cover 1.jpeg" alt="" class="w-full object-cover">
-                    <audio controls class="w-full mt-5">
+                <div class="foto2 mb-8">
+                    <img src="../asset/album cover 1.jpeg" alt="" class="w-full object-cover rounded">
+                    <audio controls class="w-full mt-3">
                         <source src="../asset/1.mp3" type="audio/mpeg">
                     </audio>
                 </div>
-                <div class="foto2 mb-10 relative group" data-aos="fade-right" data-aos-duration="3000">
-                    <img src="../asset/album cover 2.jpeg" alt="" class="w-full object-cover">
-                    <audio controls class="w-full mt-5">
+                <div class="foto2 mb-8">
+                    <img src="../asset/album cover 2.jpeg" alt="" class="w-full object-cover rounded">
+                    <audio controls class="w-full mt-3">
                         <source src="../asset/2.mp3" type="audio/mpeg">
                     </audio>
                 </div>
@@ -202,146 +174,117 @@
         </div>
 
         <!-- Section 4: Doa -->
-        <div class="section w-full min-h-screen flex flex-col justify-center items-center flex-wrap snap-start bg-[#FFF8E7]">
-            <div class="my-10 font-extrabold text-4xl font-mono" style="font-family: 'Pacifico', cursive;" data-aos="fade-down" data-aos-duration="1000">
+        <div class="section w-full min-h-screen flex flex-col justify-center items-center snap-start bg-[#FFF8E7]">
+            <div class="my-6 font-extrabold text-4xl text-[#443e36]" style="font-family:'Pacifico',cursive;">
                 Doaku Untukmu
             </div>
             <div id="draggable-scroll" class="overflow-x-auto snap-x snap-mandatory flex w-[90%] gap-4 no-scrollbar p-4">
-                <div class="flex-shrink-0 snap-center" data-aos="fade-up" data-aos-duration="3000">
+                <div class="flex-shrink-0 snap-center">
                     <div class="flex flex-col py-4 items-center bg-[#f5d7a4] rounded-lg w-52 h-52 text-center shadow-lg shadow-[#a7916d]">
-                        <div class="font-bold m-2">Ya Tuhan, bahagiakanlah dia seperti bagaimana dia membahagiakanku setiap hari.</div>
+                        <div class="font-bold m-2 text-[#443e36]">Ya Tuhan, bahagiakanlah dia seperti bagaimana dia membahagiakanku setiap hari.</div>
                     </div>
                 </div>
-                <div class="flex-shrink-0 snap-center" data-aos="fade-down" data-aos-duration="3000">
+                <div class="flex-shrink-0 snap-center">
                     <div class="flex flex-col py-4 items-center bg-[#ffeace] rounded-lg w-52 h-52 text-center shadow-lg shadow-[#8d8172]">
-                        <div class="font-bold m-2">Lindungilah Diana dalam setiap langkahnya, dan kuatkan hatinya di saat ia rapuh.</div>
+                        <div class="font-bold m-2 text-[#443e36]">Lindungilah Diana dalam setiap langkahnya, dan kuatkan hatinya di saat ia rapuh.</div>
                     </div>
                 </div>
-                <div class="flex-shrink-0 snap-center" data-aos="fade-up" data-aos-duration="3000">
+                <div class="flex-shrink-0 snap-center">
                     <div class="flex flex-col py-4 items-center bg-[#f5d7a4] rounded-lg w-52 h-52 text-center shadow-lg shadow-[#a7916d]">
-                        <div class="font-bold m-2">Berikanlah ia kedamaian dalam pikirannya, dan kehangatan dalam hatinya.</div>
+                        <div class="font-bold m-2 text-[#443e36]">Berikanlah ia kedamaian dalam pikirannya, dan kehangatan dalam hatinya.</div>
                     </div>
                 </div>
-                <div class="flex-shrink-0 snap-center" data-aos="fade-down" data-aos-duration="3000">
+                <div class="flex-shrink-0 snap-center">
                     <div class="flex flex-col py-4 items-center bg-[#ffeace] rounded-lg w-52 h-52 text-center shadow-lg shadow-[#8d8172]">
-                        <div class="font-bold m-2">Semoga cintaku padanya menjadi berkah, bukan beban. Menjadi kekuatan, bukan kelemahan.</div>
+                        <div class="font-bold m-2 text-[#443e36]">Semoga cintaku padanya menjadi berkah, bukan beban. Menjadi kekuatan, bukan kelemahan.</div>
                     </div>
                 </div>
-                <div class="flex-shrink-0 snap-center" data-aos="fade-up" data-aos-duration="3000">
+                <div class="flex-shrink-0 snap-center">
                     <div class="flex flex-col py-4 items-center bg-[#f5d7a4] rounded-lg w-52 h-52 text-center shadow-lg shadow-[#a7916d]">
-                        <div class="font-bold m-2">Jauhkan dia dari luka yang tak terlihat, dan hadirkan orang-orang baik di sekelilingnya.</div>
+                        <div class="font-bold m-2 text-[#443e36]">Jauhkan dia dari luka yang tak terlihat, dan hadirkan orang-orang baik di sekelilingnya.</div>
                     </div>
                 </div>
-                <div class="flex-shrink-0 snap-center" data-aos="fade-down" data-aos-duration="3000">
+                <div class="flex-shrink-0 snap-center">
                     <div class="flex flex-col py-4 items-center bg-[#ffeace] rounded-lg w-52 h-52 text-center shadow-lg shadow-[#8d8172]">
-                        <div class="font-bold m-2">Panjangkan umurnya dalam kebaikan, sehatkan tubuhnya, dan lapangkan rezekinya.</div>
+                        <div class="font-bold m-2 text-[#443e36]">Panjangkan umurnya dalam kebaikan, sehatkan tubuhnya, dan lapangkan rezekinya.</div>
                     </div>
                 </div>
-                <div class="flex-shrink-0 snap-center" data-aos="fade-up" data-aos-duration="3000">
+                <div class="flex-shrink-0 snap-center">
                     <div class="flex flex-col py-4 items-center bg-[#f5d7a4] rounded-lg w-52 h-52 text-center shadow-lg shadow-[#a7916d]">
-                        <div class="font-bold m-2">Ijinkan aku terus mencintai dan menjaga Diana dengan caraku yang sederhana namun sungguh-sungguh.</div>
+                        <div class="font-bold m-2 text-[#443e36]">Ijinkan aku terus mencintai dan menjaga Diana dengan caraku yang sederhana namun sungguh-sungguh.</div>
                     </div>
                 </div>
-                <div class="flex-shrink-0 snap-center" data-aos="fade-down" data-aos-duration="3000">
+                <div class="flex-shrink-0 snap-center">
                     <div class="flex flex-col py-4 items-center bg-[#ffeace] rounded-lg w-52 h-52 text-center shadow-lg shadow-[#8d8172]">
-                        <div class="font-bold m-2">Jika aku adalah takdirnya, tuntunlah kami agar saling menguatkan dan tumbuh bersama dalam cinta yang Engkau ridhoi.</div>
+                        <div class="font-bold m-2 text-[#443e36]">Jika aku adalah takdirnya, tuntunlah kami agar saling menguatkan dan tumbuh bersama dalam cinta yang Engkau ridhoi.</div>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Section 5: Gallery -->
-        <div class="section w-full flex flex-col items-center snap-start bg-[#fff3ce] relative">
-            <img src="../asset/bg2.png" alt="" class="w-full absolute">
-            <div class="my-10 font-extrabold text-4xl font-mono z-10 mb-16" style="font-family: 'Pacifico', cursive;" data-aos="fade-down" data-aos-duration="3000">
+        <div class="section w-full min-h-screen flex flex-col items-center snap-start bg-[#fff3ce] relative pb-12">
+            <img src="../asset/bg2.png" alt="" class="w-full absolute top-0" onerror="this.style.display='none'">
+            <div class="my-10 font-extrabold text-4xl text-[#443e36] z-10" style="font-family:'Pacifico',cursive;">
                 Galeri Foto
             </div>
-            <div class="flex flex-wrap justify-center gap-7 mb-10 z-10" id="gallery-grid">
-                <!-- Photos generated by JS -->
-            </div>
+            <div class="flex flex-wrap justify-center gap-5 z-10 w-full px-4" id="gallery-grid"></div>
         </div>
 
     </div>
 
     <script>
-        // Generate gallery photos
+        // Inisialisasi AOS langsung (overlay start masih menutupi layar)
+        AOS.init({ once: true, duration: 1000 });
+
+        // Generate gallery
         const gallery = document.getElementById('gallery-grid');
         for (let i = 11; i <= 76; i++) {
             const num = String(i).padStart(4, '0');
             const div = document.createElement('div');
             div.className = 'bg-white p-2 rounded-xl max-w-[300px] h-fit';
-            div.setAttribute('data-aos', 'zoom-in');
-            div.setAttribute('data-aos-duration', '3000');
             div.innerHTML = `<img src="../asset/img/IMG-20250609-WA${num}.jpg" alt="" class="rounded-lg w-full" onerror="this.parentElement.style.display='none'">`;
             gallery.appendChild(div);
         }
 
         function start() {
             const startEl = document.getElementById('start');
-            let count = 5;
             startEl.querySelector('button').style.display = 'none';
-
+            let count = 5;
             const countEl = document.createElement('div');
             countEl.className = 'text-8xl font-extrabold text-[#443e36]';
             startEl.appendChild(countEl);
 
             const interval = setInterval(() => {
-                countEl.textContent = count;
-                count--;
+                countEl.textContent = count--;
                 if (count < 0) {
                     clearInterval(interval);
                     startEl.style.display = 'none';
                     document.getElementById('back-btn').style.display = 'block';
 
-                    const jsConfetti = new JSConfetti();
-                    jsConfetti.addConfetti({ confettiColors: ['#f5d7a4', '#ffeace', '#e8c47a', '#fff3ce', '#443e36'] });
-
-                    const confettiAudio = new Audio('../asset/confetti.mp3');
-                    confettiAudio.play().catch(() => {});
-
-                    const bgMusic = new Audio('../asset/musik.mp3');
-                    bgMusic.loop = true;
-                    bgMusic.volume = 0.4;
-                    bgMusic.play().catch(() => {});
-
-                    AOS.init({ once: true });
+                    new JSConfetti().addConfetti({
+                        confettiColors: ['#f5d7a4','#ffeace','#e8c47a','#fff3ce','#443e36']
+                    });
+                    new Audio('../asset/confetti.mp3').play().catch(() => {});
+                    const m = new Audio('../asset/musik.mp3');
+                    m.loop = true; m.volume = 0.4; m.play().catch(() => {});
                 }
             }, 1000);
         }
 
-        // Momentum drag scroll for doa section
+        // Drag scroll doa
         const draggable = document.getElementById('draggable-scroll');
         let isDragging = false, startX = 0, scrollLeft = 0, velX = 0, lastX = 0;
-
-        draggable.addEventListener('mousedown', e => {
-            isDragging = true;
-            startX = e.pageX - draggable.offsetLeft;
-            scrollLeft = draggable.scrollLeft;
-            lastX = e.pageX;
-            velX = 0;
-        });
-        draggable.addEventListener('mousemove', e => {
-            if (!isDragging) return;
-            e.preventDefault();
-            const x = e.pageX - draggable.offsetLeft;
-            velX = e.pageX - lastX;
-            lastX = e.pageX;
-            draggable.scrollLeft = scrollLeft - (x - startX);
-        });
-        ['mouseup', 'mouseleave'].forEach(evt => {
-            draggable.addEventListener(evt, () => {
-                isDragging = false;
-                let momentum = velX;
-                const slide = () => {
-                    if (Math.abs(momentum) < 0.5) return;
-                    draggable.scrollLeft -= momentum;
-                    momentum *= 0.95;
-                    requestAnimationFrame(slide);
-                };
-                requestAnimationFrame(slide);
-            });
-        });
+        draggable.addEventListener('mousedown', e => { isDragging = true; startX = e.pageX - draggable.offsetLeft; scrollLeft = draggable.scrollLeft; lastX = e.pageX; velX = 0; });
+        draggable.addEventListener('mousemove', e => { if (!isDragging) return; e.preventDefault(); velX = e.pageX - lastX; lastX = e.pageX; draggable.scrollLeft = scrollLeft - (e.pageX - draggable.offsetLeft - startX); });
+        ['mouseup','mouseleave'].forEach(evt => draggable.addEventListener(evt, () => {
+            isDragging = false;
+            let m = velX;
+            const s = () => { if (Math.abs(m) < 0.5) return; draggable.scrollLeft -= m; m *= 0.95; requestAnimationFrame(s); };
+            requestAnimationFrame(s);
+        }));
     </script>
+
     <script type="module">
         import * as THREE from 'https://cdn.skypack.dev/three@0.157.0';
         import { OrbitControls } from 'https://cdn.skypack.dev/three@0.157.0/examples/jsm/controls/OrbitControls.js';
@@ -361,9 +304,9 @@
         controls.enableDamping = true;
 
         scene.add(new THREE.AmbientLight(0xffffff, 1));
-        const dirLight = new THREE.DirectionalLight(0xffffff, 1);
-        dirLight.position.set(5, 10, 5);
-        scene.add(dirLight);
+        const d = new THREE.DirectionalLight(0xffffff, 1);
+        d.position.set(5, 10, 5);
+        scene.add(d);
 
         new GLTFLoader().load('../models/dino/scene.gltf', gltf => {
             gltf.scene.scale.set(1.5, 1.5, 1.5);
