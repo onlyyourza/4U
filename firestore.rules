@@ -1,6 +1,8 @@
 // ============================================================
-//  Firestore Security Rules
-//  Copy-paste ke: Google Console → Firestore → Rules tab
+//  Database Security Rules (Google Firestore)
+//  Copy-paste ke:
+//  console.firebase.google.com → project diana-website
+//  → Firestore Database → tab Rules → Publish
 // ============================================================
 
 rules_version = '2';

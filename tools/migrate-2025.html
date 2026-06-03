@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
-    <title>Migrasi Foto 2025 → Firebase</title>
+    <title>Migrasi Foto 2025 → Cloudinary</title>
     <style>
         * { user-select: none; }
         body { background: #FFF8E7; font-family: sans-serif; }
@@ -22,7 +22,7 @@
                 Migrasi Foto 2025
             </h1>
             <p class="text-[#7a6a55] text-sm">
-                Upload semua foto 2025 ke Firebase Storage agar bisa diakses dari semua perangkat.<br>
+                Upload semua foto 2025 ke Cloudinary agar bisa diakses dari semua perangkat.<br>
                 <strong>Gunakan halaman ini sekali saja.</strong>
             </p>
         </div>
@@ -43,7 +43,7 @@
 
         <!-- Step 2: Upload -->
         <div class="bg-white rounded-2xl p-6 shadow-sm border border-[#f5d7a4] mb-4">
-            <h2 class="font-bold text-[#443e36] mb-3">2. Upload ke Firebase</h2>
+            <h2 class="font-bold text-[#443e36] mb-3">2. Upload ke Cloudinary</h2>
             <div class="flex items-center gap-3 mb-4">
                 <button id="upload-btn" onclick="startMigration()" disabled
                     class="px-6 py-2 bg-[#f5d7a4] text-[#443e36] rounded-full font-bold text-sm disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[#e8c47a] transition-colors">
@@ -71,7 +71,7 @@
         <div id="done-box" class="hidden bg-[#fff3ce] border border-[#e8c47a] rounded-2xl p-6 text-center">
             <div class="text-4xl mb-2">🎉</div>
             <h2 class="font-bold text-[#443e36] text-lg mb-1">Migrasi selesai!</h2>
-            <p class="text-[#7a6a55] text-sm">Semua foto berhasil diupload ke Firebase.</p>
+            <p class="text-[#7a6a55] text-sm">Semua foto berhasil diupload ke Cloudinary.</p>
             <p class="text-[#7a6a55] text-sm mt-1">Kamu bisa menutup halaman ini sekarang.</p>
             <a href="../index.html" class="inline-block mt-4 px-6 py-2 bg-[#f5d7a4] text-[#443e36] rounded-full font-bold text-sm">
                 Kembali ke Website →
