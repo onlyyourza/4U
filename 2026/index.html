@@ -554,7 +554,7 @@
                 let box = new THREE.Box3().setFromObject(obj);
                 const size = box.getSize(new THREE.Vector3());
                 const maxDim = Math.max(size.x, size.y, size.z) || 1;
-                obj.scale.setScalar(9 / maxDim);
+                obj.scale.setScalar(11.5 / maxDim);
                 box = new THREE.Box3().setFromObject(obj);
                 const center = box.getCenter(new THREE.Vector3());
                 obj.position.sub(center);
