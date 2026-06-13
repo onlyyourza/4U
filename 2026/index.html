@@ -109,13 +109,14 @@
         }
         .closed-letter:hover { transform: rotate(-8deg) scale(1.04); }
         .closed-letter .heart-btn {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%) rotate(8deg);
             width: 70px; height: 70px; border-radius: 50%;
             background: radial-gradient(circle at 35% 30%, #ff6b8b, #c9184a);
             display: flex; align-items: center; justify-content: center; color: #fff; font-size: 30px;
             box-shadow: 0 8px 20px rgba(201,24,74,0.5); animation: pulse 1.6s ease-in-out infinite;
         }
-        @keyframes pulse { 0%,100% { transform: translate(-50%,-50%) scale(1); } 50% { transform: translate(-50%,-50%) scale(1.12); } }
+        /* counter-rotate (+8deg) supaya love tetap tegak walau suratnya miring -8deg */
+        @keyframes pulse { 0%,100% { transform: translate(-50%,-50%) rotate(8deg) scale(1); } 50% { transform: translate(-50%,-50%) rotate(8deg) scale(1.12); } }
         .closed-letter .hint {
             position: absolute; bottom: -38px; left: 0; right: 0; color: #fff; font-weight: 600; font-size: 13px;
             text-shadow: 0 2px 8px rgba(201,24,74,0.5);
