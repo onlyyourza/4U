@@ -7,115 +7,147 @@
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://cdn.jsdelivr.net/npm/js-confetti@latest/dist/js-confetti.browser.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Dancing+Script:wght@500;700&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Spline 3D viewer (untuk halaman flower) -->
     <script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.48/build/spline-viewer.js"></script>
     <title>4 YOU — 2026</title>
     <style>
         * { box-sizing: border-box; user-select: none; -webkit-user-select: none; }
-
         html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; }
         body {
-            font-family: 'Quicksand', sans-serif;
-            color: #7a3b52;
+            font-family: 'Quicksand', sans-serif; color: #7a3b52;
             background: linear-gradient(160deg, #ffd9e8 0%, #ffc2d9 50%, #ffb3cd 100%);
         }
-
         .vibes   { font-family: 'Great Vibes', cursive; }
         .dancing { font-family: 'Dancing Script', cursive; }
 
-        /* ===== View system (no scroll, click navigation) ===== */
+        /* ===== View system ===== */
         .view {
-            position: fixed; inset: 0;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            position: fixed; inset: 0; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; padding: 24px; text-align: center;
             opacity: 0; pointer-events: none; transition: opacity 0.6s ease;
-            padding: 24px; text-align: center;
         }
         .view.active { opacity: 1; pointer-events: auto; }
 
-        /* ===== Decorative white birthday attributes ===== */
-        .deco { position: absolute; pointer-events: none; opacity: 0.95; }
-
+        /* ===== Birthday decorations ===== */
         .balloon {
-            position: absolute; width: 44px; height: 56px; background: #fff;
-            border-radius: 50% 50% 50% 50%; opacity: 0.9; pointer-events: none;
-            box-shadow: inset -6px -6px 0 rgba(255,180,205,0.25);
-            animation: sway 6s ease-in-out infinite;
+            position: absolute; width: 44px; height: 56px; background: #fff; border-radius: 50%;
+            opacity: 0.9; box-shadow: inset -6px -6px 0 rgba(255,180,205,0.25); animation: sway 6s ease-in-out infinite;
         }
-        .balloon::before {
-            content: ''; position: absolute; bottom: -6px; left: 50%; transform: translateX(-50%);
-            border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 7px solid #fff;
-        }
-        .balloon::after {
-            content: ''; position: absolute; bottom: -42px; left: 50%; width: 1px; height: 42px;
-            background: rgba(255,255,255,0.7);
-        }
+        .balloon::before { content: ''; position: absolute; bottom: -6px; left: 50%; transform: translateX(-50%);
+            border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 7px solid #fff; }
+        .balloon::after { content: ''; position: absolute; bottom: -42px; left: 50%; width: 1px; height: 42px; background: rgba(255,255,255,0.7); }
         @keyframes sway { 0%,100% { transform: translateY(0) rotate(-4deg); } 50% { transform: translateY(-14px) rotate(4deg); } }
-
-        .confetti-dot {
-            position: absolute; width: 9px; height: 9px; background: #fff; opacity: 0.85;
-            border-radius: 2px; animation: fall linear infinite; pointer-events: none;
-        }
+        .confetti-dot { position: absolute; width: 9px; height: 9px; background: #fff; opacity: 0.85; border-radius: 2px; animation: fall linear infinite; }
         @keyframes fall { to { transform: translateY(105vh) rotate(360deg); } }
-
         .spark { position: absolute; color: #fff; opacity: 0.9; animation: twinkle 2.5s ease-in-out infinite; }
         @keyframes twinkle { 0%,100% { opacity: 0.2; transform: scale(0.8); } 50% { opacity: 0.95; transform: scale(1.2); } }
-
-        /* Garland at top */
         .garland { position: absolute; top: 0; left: 0; width: 100%; }
 
-        /* ===== Buttons ===== */
+        /* ===== Continue / buttons ===== */
         .continue-link {
-            position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
-            color: #fff; font-weight: 600; font-size: 15px; cursor: pointer;
-            display: flex; flex-direction: column; align-items: center; gap: 6px;
-            text-shadow: 0 2px 8px rgba(214,93,143,0.4); animation: bob 2s ease-in-out infinite;
+            position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); color: #fff;
+            font-weight: 600; font-size: 15px; cursor: pointer; display: flex; flex-direction: column;
+            align-items: center; gap: 6px; text-shadow: 0 2px 8px rgba(214,93,143,0.4); animation: bob 2s ease-in-out infinite;
         }
-        @keyframes bob { 0%,100% { transform: translate(-50%, 0); } 50% { transform: translate(-50%, 8px); } }
+        @keyframes bob { 0%,100% { transform: translate(-50%,0); } 50% { transform: translate(-50%,8px); } }
         .continue-link .chev { font-size: 26px; }
 
         .back-btn {
-            position: fixed; top: 18px; left: 18px; z-index: 50;
-            background: rgba(255,255,255,0.85); color: #fb6f92; border: none;
-            padding: 9px 18px; border-radius: 999px; font-weight: 700; font-size: 13px; cursor: pointer;
-            box-shadow: 0 4px 14px rgba(251,111,146,0.3); transition: transform 0.2s, background 0.2s;
+            position: fixed; top: 18px; left: 18px; z-index: 50; background: rgba(255,255,255,0.85);
+            color: #fb6f92; border: none; padding: 9px 18px; border-radius: 999px; font-weight: 700; font-size: 13px;
+            cursor: pointer; box-shadow: 0 4px 14px rgba(251,111,146,0.3); transition: transform 0.2s, background 0.2s;
         }
         .back-btn:hover { transform: translateX(-3px); background: #fff; }
 
         #music-toggle {
-            position: fixed; bottom: 20px; right: 20px; z-index: 50;
-            width: 50px; height: 50px; border-radius: 50%; border: none;
-            background: rgba(255,255,255,0.9); color: #fb6f92; font-size: 22px; cursor: pointer;
+            position: fixed; bottom: 20px; right: 20px; z-index: 50; width: 50px; height: 50px; border-radius: 50%;
+            border: none; background: rgba(255,255,255,0.9); color: #fb6f92; font-size: 22px; cursor: pointer;
             box-shadow: 0 6px 18px rgba(251,111,146,0.4); transition: transform 0.2s; display: none;
         }
         #music-toggle:hover { transform: scale(1.1); }
         #music-toggle.playing { animation: spin 4s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* ===== Menu cards ===== */
-        .menu-grid {
-            display: flex; flex-wrap: wrap; gap: 22px; justify-content: center; max-width: 760px;
-        }
-        .menu-card {
-            width: 150px; height: 170px; background: rgba(255,255,255,0.92); border-radius: 24px;
-            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px;
-            cursor: pointer; box-shadow: 0 12px 30px rgba(251,111,146,0.25);
-            transition: transform 0.25s ease, box-shadow 0.25s ease;
-        }
-        .menu-card:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(251,111,146,0.35); }
-        .menu-card svg { width: 56px; height: 56px; }
-        .menu-card span { font-weight: 700; color: #fb6f92; font-size: 15px; }
+        /* ===== Menu cards (rich icons + animation) ===== */
+        .menu-grid { display: flex; flex-wrap: wrap; gap: 30px; justify-content: center; max-width: 800px; }
+        .menu-item { animation: floatItem 4.5s ease-in-out infinite; }
+        .menu-item:nth-child(2) { animation-delay: .7s; }
+        .menu-item:nth-child(3) { animation-delay: 1.4s; }
+        @keyframes floatItem { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
 
-        /* entrance pop for cards */
-        .pop-in { animation: popIn 0.5s ease both; }
-        @keyframes popIn { from { opacity: 0; transform: scale(0.8) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+        .menu-card {
+            width: 172px; height: 196px; background: rgba(255,255,255,0.95); border-radius: 26px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px;
+            cursor: pointer; box-shadow: 0 14px 34px rgba(201,24,74,0.22);
+            transition: transform 0.28s ease, box-shadow 0.28s ease;
+        }
+        .menu-card:hover { transform: scale(1.07) translateY(-6px); box-shadow: 0 24px 48px rgba(201,24,74,0.32); }
+        .menu-card .icon { width: 96px; height: 96px; }
+        .menu-card:hover .icon { animation: wiggle 0.7s ease; }
+        @keyframes wiggle { 0%,100% { transform: rotate(0); } 25% { transform: rotate(-9deg); } 75% { transform: rotate(9deg); } }
+        .menu-card span { font-weight: 700; color: #c9184a; font-size: 17px; letter-spacing: 0.3px; }
+        @keyframes dropIn { 0% { opacity: 0; transform: translateY(-70px) scale(.5) rotate(-12deg); } 60% { opacity: 1; transform: translateY(12px) scale(1.06) rotate(4deg); } 100% { transform: translateY(0) scale(1) rotate(0); } }
 
         spline-viewer { width: 100%; height: 100%; }
 
-        /* Start overlay */
         #start {
             position: fixed; inset: 0; z-index: 60; display: flex; flex-direction: column;
-            align-items: center; justify-content: center; gap: 16px;
-            background: linear-gradient(160deg, #ffd9e8, #ffb3cd);
+            align-items: center; justify-content: center; gap: 16px; background: linear-gradient(160deg, #ffd9e8, #ffb3cd);
+        }
+
+        /* ===== Message view ===== */
+        #view-message { padding: 0; justify-content: center; }
+        .msg-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; }
+        .msg-overlay { position: absolute; inset: 0; z-index: 1;
+            background: linear-gradient(180deg, rgba(255,180,205,0.55), rgba(201,24,74,0.45)); }
+        .msg-content {
+            position: relative; z-index: 2; width: 100%; max-width: 1100px; height: 100%;
+            display: flex; align-items: center; justify-content: space-around; flex-wrap: wrap; gap: 24px; padding: 40px 24px;
+        }
+
+        /* Love note card */
+        .letter {
+            width: 330px; max-width: 88vw; background: #fff; border-radius: 18px; padding: 26px 24px 30px;
+            box-shadow: 0 20px 50px rgba(201,24,74,0.35); position: relative; text-align: center;
+        }
+        .letter::before, .letter::after {
+            content: ''; position: absolute; left: 0; width: 100%; height: 14px;
+            background: radial-gradient(circle at 10px -2px, transparent 9px, #fff 10px) repeat-x;
+            background-size: 20px 14px;
+        }
+        .letter::before { top: -12px; }
+        .letter::after { bottom: -12px; transform: rotate(180deg); }
+        .click-view {
+            display: inline-flex; align-items: center; gap: 8px; cursor: pointer; color: #c9184a; font-weight: 700;
+            font-size: 15px; padding: 8px 18px; border: 2px dashed #ffafcc; border-radius: 999px; transition: 0.25s; margin-bottom: 4px;
+        }
+        .click-view:hover { background: #fff0f5; transform: scale(1.04); }
+        .letter-msg {
+            max-height: 0; opacity: 0; overflow: hidden; transition: max-height 0.7s ease, opacity 0.7s ease, margin 0.5s;
+            color: #7a3b52; font-size: 15px; line-height: 1.7; text-align: left;
+        }
+        .letter.open .letter-msg { max-height: 420px; opacity: 1; margin-top: 16px; }
+        .letter.open .click-view { color: #ffafcc; }
+        .letter .note-label { font-family: 'Dancing Script', cursive; font-size: 26px; color: #fb6f92; margin-bottom: 10px; }
+
+        /* Polaroid scatter */
+        .polaroid-scatter { position: relative; width: 360px; height: 380px; max-width: 90vw; flex-shrink: 0; }
+        .pol {
+            position: absolute; width: 130px; background: #fff; padding: 8px 8px 26px; border-radius: 4px;
+            box-shadow: 0 12px 28px rgba(201,24,74,0.3);
+        }
+        .pol .ph { width: 100%; aspect-ratio: 1; border-radius: 2px; object-fit: cover; display: block;
+            background: #ffe0ec; }
+        .pol .ph-empty { width: 100%; aspect-ratio: 1; border-radius: 2px; background: #fff0f5; border: 2px dashed #ffafcc;
+            display: flex; align-items: center; justify-content: center; color: #ffafcc; font-size: 26px; }
+        .pol .cap { font-family: 'Dancing Script', cursive; color: #c9184a; font-size: 15px; margin-top: 4px; }
+        .pol:nth-child(1) { top: 0;    left: 30px;  transform: rotate(-8deg); }
+        .pol:nth-child(2) { top: 20px; right: 0;    transform: rotate(7deg); }
+        .pol:nth-child(3) { bottom: 30px; left: 0;  transform: rotate(5deg); }
+        .pol:nth-child(4) { bottom: 0;  right: 40px; transform: rotate(-6deg); }
+
+        @media (max-width: 640px) {
+            .msg-content { flex-direction: column; justify-content: flex-start; padding-top: 70px; overflow-y: auto; }
+            .polaroid-scatter { height: 320px; }
         }
     </style>
 </head>
@@ -134,29 +166,19 @@
 
     <!-- ============ VIEW 1: HAPPY BIRTHDAY ============ -->
     <section class="view" id="view-birthday">
-        <!-- garland -->
         <svg class="garland" viewBox="0 0 1200 80" preserveAspectRatio="none" height="70">
             <path d="M0,10 Q300,70 600,18 T1200,12" stroke="#fff" stroke-width="2" fill="none" opacity="0.8"/>
             <g fill="#fff" opacity="0.9">
-                <polygon points="100,16 118,16 109,40"/>
-                <polygon points="260,34 278,34 269,58"/>
-                <polygon points="430,30 448,30 439,54"/>
-                <polygon points="600,20 618,20 609,44"/>
-                <polygon points="770,30 788,30 779,54"/>
-                <polygon points="940,34 958,34 949,58"/>
+                <polygon points="100,16 118,16 109,40"/><polygon points="260,34 278,34 269,58"/>
+                <polygon points="430,30 448,30 439,54"/><polygon points="600,20 618,20 609,44"/>
+                <polygon points="770,30 788,30 779,54"/><polygon points="940,34 958,34 949,58"/>
                 <polygon points="1090,16 1108,16 1099,40"/>
             </g>
         </svg>
 
         <div class="dancing text-3xl md:text-4xl text-white mb-2" style="text-shadow:0 2px 8px rgba(214,93,143,.35)">08 - 06 - 2026</div>
-
-        <h1 class="vibes text-white leading-none" style="font-size:clamp(64px,14vw,150px); text-shadow:0 6px 22px rgba(214,93,143,.45)">
-            Happy Birthday
-        </h1>
-
-        <p class="dancing text-2xl md:text-3xl text-white mt-3" style="text-shadow:0 2px 8px rgba(214,93,143,.35)">
-            i hope this little gift make you happy
-        </p>
+        <h1 class="vibes text-white leading-none" style="font-size:clamp(64px,14vw,150px); text-shadow:0 6px 22px rgba(214,93,143,.45)">Happy Birthday</h1>
+        <p class="dancing text-2xl md:text-3xl text-white mt-3" style="text-shadow:0 2px 8px rgba(214,93,143,.35)">i hope this little gift make you happy</p>
 
         <div class="continue-link" onclick="showView('menu')">
             <span>klik disini untuk lanjut ke halaman yang lain</span>
@@ -167,61 +189,123 @@
     <!-- ============ VIEW 2: THESE ARE FOR YOU ============ -->
     <section class="view" id="view-menu">
         <button class="back-btn" onclick="showView('birthday')">← Kembali</button>
-
-        <h2 class="vibes text-white mb-10" style="font-size:clamp(44px,9vw,80px); text-shadow:0 5px 18px rgba(214,93,143,.45)">
-            These are for you
-        </h2>
+        <h2 class="vibes text-white mb-10" style="font-size:clamp(44px,9vw,80px); text-shadow:0 5px 18px rgba(214,93,143,.45)">These are for you</h2>
 
         <div class="menu-grid">
             <!-- Message -->
-            <div class="menu-card pop-in" style="animation-delay:.05s" onclick="showView('message')">
-                <svg viewBox="0 0 24 24" fill="none" stroke="#fb6f92" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="2.5" y="5" width="19" height="14" rx="2.5"/>
-                    <path d="M3 6.5l9 6 9-6"/>
-                </svg>
-                <span>Message</span>
+            <div class="menu-item">
+                <div class="menu-card" onclick="showView('message')">
+                    <svg class="icon" viewBox="0 0 128 128">
+                        <defs>
+                            <linearGradient id="env" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#ffe3ee"/></linearGradient>
+                            <linearGradient id="wax" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff5d7d"/><stop offset="1" stop-color="#c9184a"/></linearGradient>
+                            <filter id="s1" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#c9184a" flood-opacity="0.25"/></filter>
+                        </defs>
+                        <g filter="url(#s1)">
+                            <rect x="16" y="38" width="96" height="64" rx="9" fill="url(#env)" stroke="#f4c4d6" stroke-width="1.5"/>
+                            <path d="M18 46 L64 80 L110 46" fill="none" stroke="#f4c4d6" stroke-width="3.5" stroke-linejoin="round"/>
+                            <path d="M19 100 L52 72 M109 100 L76 72" stroke="#f8d6e2" stroke-width="2.5"/>
+                        </g>
+                        <g filter="url(#s1)">
+                            <circle cx="64" cy="74" r="16" fill="url(#wax)"/>
+                            <path d="M64 69c-2.2-3.2-7.5-2-7.5 2 0 3.2 4.5 5.5 7.5 7.6 3-2.1 7.5-4.4 7.5-7.6 0-4-5.3-5.2-7.5-2z" fill="#ffd6e0" opacity="0.92"/>
+                        </g>
+                    </svg>
+                    <span>Message</span>
+                </div>
             </div>
 
             <!-- Flower -->
-            <div class="menu-card pop-in" style="animation-delay:.15s" onclick="showView('flower')">
-                <svg viewBox="0 0 24 24" fill="none" stroke="#fb6f92" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="9" r="2.2"/>
-                    <path d="M12 6.8c0-2.2 1-3.3 2.3-3.3S16.6 5 15 6.6M12 6.8c0-2.2-1-3.3-2.3-3.3S7.4 5 9 6.6"/>
-                    <path d="M14.2 9c2.2 0 3.3 1 3.3 2.3S15.4 13.6 13.8 12M9.8 9c-2.2 0-3.3 1-3.3 2.3S8.6 13.6 10.2 12"/>
-                    <path d="M12 11.2V21M12 21c-2 0-4-1-5-2.5M12 21c2 0 4-1 5-2.5"/>
-                </svg>
-                <span>Flower</span>
+            <div class="menu-item">
+                <div class="menu-card" onclick="showView('flower')">
+                    <svg class="icon" viewBox="0 0 128 128">
+                        <defs>
+                            <linearGradient id="paper" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff0f5"/><stop offset="1" stop-color="#ffc2d4"/></linearGradient>
+                            <radialGradient id="rose" cx="0.4" cy="0.35" r="0.7"><stop offset="0" stop-color="#ff8fab"/><stop offset="1" stop-color="#e01e5a"/></radialGradient>
+                            <radialGradient id="rose2" cx="0.4" cy="0.35" r="0.7"><stop offset="0" stop-color="#ffa6bd"/><stop offset="1" stop-color="#fb6f92"/></radialGradient>
+                            <linearGradient id="leaf" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8ed99c"/><stop offset="1" stop-color="#3aa856"/></linearGradient>
+                            <filter id="s2" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#c9184a" flood-opacity="0.22"/></filter>
+                        </defs>
+                        <g filter="url(#s2)">
+                            <!-- wrapping cone -->
+                            <path d="M64 118 L34 70 Q64 60 94 70 Z" fill="url(#paper)" stroke="#f4c4d6" stroke-width="1.5"/>
+                            <path d="M64 118 L48 74 M64 118 L80 74" stroke="#f4c4d6" stroke-width="1.5" opacity="0.7"/>
+                            <!-- leaves -->
+                            <ellipse cx="42" cy="60" rx="9" ry="16" fill="url(#leaf)" transform="rotate(-30 42 60)"/>
+                            <ellipse cx="86" cy="60" rx="9" ry="16" fill="url(#leaf)" transform="rotate(30 86 60)"/>
+                            <!-- roses -->
+                            <circle cx="46" cy="52" r="15" fill="url(#rose2)"/>
+                            <circle cx="82" cy="52" r="15" fill="url(#rose2)"/>
+                            <circle cx="64" cy="42" r="17" fill="url(#rose)"/>
+                            <!-- rose swirls -->
+                            <path d="M64 42 m-7 0 a7 7 0 1 0 14 0 a7 7 0 1 0 -14 0" fill="none" stroke="#fff0f5" stroke-width="1.6" opacity="0.7"/>
+                            <path d="M46 52 m-5 0 a5 5 0 1 0 10 0" fill="none" stroke="#fff0f5" stroke-width="1.4" opacity="0.6"/>
+                            <path d="M82 52 m-5 0 a5 5 0 1 0 10 0" fill="none" stroke="#fff0f5" stroke-width="1.4" opacity="0.6"/>
+                        </g>
+                    </svg>
+                    <span>Flower</span>
+                </div>
             </div>
 
             <!-- Foto -->
-            <div class="menu-card pop-in" style="animation-delay:.25s" onclick="showView('foto')">
-                <svg viewBox="0 0 24 24" fill="none" stroke="#fb6f92" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="3" y="4.5" width="18" height="15" rx="2.5"/>
-                    <circle cx="9" cy="10" r="1.8"/>
-                    <path d="M4 18l5-4 4 3 3-2.5 4 3.5"/>
-                </svg>
-                <span>Foto</span>
-            </div>
-
-            <!-- Lagu (disc) -->
-            <div class="menu-card pop-in" style="animation-delay:.35s" onclick="showView('lagu')">
-                <svg viewBox="0 0 24 24" fill="none" stroke="#fb6f92" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="9"/>
-                    <circle cx="12" cy="12" r="3.2"/>
-                    <circle cx="12" cy="12" r="0.6" fill="#fb6f92"/>
-                    <path d="M12 3a9 9 0 0 1 0 18" opacity="0.5"/>
-                </svg>
-                <span>Lagu</span>
+            <div class="menu-item">
+                <div class="menu-card" onclick="showView('foto')">
+                    <svg class="icon" viewBox="0 0 128 128">
+                        <defs>
+                            <linearGradient id="ph1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffd6e7"/><stop offset="1" stop-color="#ff8fab"/></linearGradient>
+                            <linearGradient id="ph2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffe9b0"/><stop offset="1" stop-color="#ffb3cd"/></linearGradient>
+                            <filter id="s3" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#c9184a" flood-opacity="0.22"/></filter>
+                        </defs>
+                        <!-- back polaroid -->
+                        <g filter="url(#s3)" transform="rotate(-12 64 66)">
+                            <rect x="26" y="34" width="64" height="74" rx="5" fill="#fff"/>
+                            <rect x="32" y="40" width="52" height="50" rx="3" fill="url(#ph2)"/>
+                        </g>
+                        <!-- front polaroid -->
+                        <g filter="url(#s3)" transform="rotate(9 64 66)">
+                            <rect x="38" y="30" width="64" height="76" rx="5" fill="#fff"/>
+                            <rect x="44" y="36" width="52" height="50" rx="3" fill="url(#ph1)"/>
+                            <!-- little scene: sun + hill -->
+                            <circle cx="84" cy="48" r="6" fill="#fff3c4"/>
+                            <path d="M44 86 q14 -20 26 -8 q10 -14 26 4 V86 Z" fill="#ffffff" opacity="0.35"/>
+                            <!-- heart -->
+                            <path d="M70 64c-2.5-3.6-8.5-2.2-8.5 2.2 0 3.6 5 6.2 8.5 8.6 3.5-2.4 8.5-5 8.5-8.6 0-4.4-6-5.8-8.5-2.2z" fill="#fb6f92"/>
+                        </g>
+                    </svg>
+                    <span>Foto</span>
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- ============ VIEW: MESSAGE (placeholder) ============ -->
+    <!-- ============ VIEW: MESSAGE ============ -->
     <section class="view" id="view-message">
+        <img class="msg-bg" src="../asset/bg-message.jpg" alt="" onerror="this.style.display='none'">
+        <div class="msg-overlay"></div>
         <button class="back-btn" onclick="showView('menu')">← Kembali</button>
-        <div class="text-6xl mb-4">💌</div>
-        <h2 class="vibes text-white mb-3" style="font-size:clamp(40px,8vw,70px); text-shadow:0 4px 14px rgba(214,93,143,.4)">Message</h2>
-        <p class="dancing text-2xl text-white">Segera hadir 💕</p>
+
+        <div class="msg-content">
+            <!-- Love note -->
+            <div class="letter" id="letter">
+                <div class="note-label">Dear Diana 🤍</div>
+                <div class="click-view" onclick="toggleLetter()">💌 Click to view</div>
+                <div class="letter-msg">
+                    <!-- [ Ganti isi pesan di sini ] -->
+                    Happy birthday! Wishing you a day filled with laughter, good vibes, and all the little things
+                    that make you genuinely happy. You deserve to feel appreciated and celebrated — not just today,
+                    but always. May this year bring you endless smiles, fun adventures, and dreams that come true.
+                    Aku bersyukur bisa jadi bagian dari hari-harimu. 💕
+                </div>
+            </div>
+
+            <!-- Polaroid scatter (ganti src untuk menambah foto) -->
+            <div class="polaroid-scatter">
+                <div class="pol"><div class="ph-empty">+</div><div class="cap">us 🤍</div></div>
+                <div class="pol"><div class="ph-empty">+</div><div class="cap">me & you</div></div>
+                <div class="pol"><div class="ph-empty">+</div><div class="cap">forever</div></div>
+                <div class="pol"><div class="ph-empty">+</div><div class="cap">2026</div></div>
+            </div>
+        </div>
     </section>
 
     <!-- ============ VIEW: FLOWER ============ -->
@@ -230,9 +314,7 @@
         <div style="position:absolute; inset:0;">
             <spline-viewer url="https://prod.spline.design/GKeXMIq-O6IlX04h/scene.splinecode" loading="lazy"></spline-viewer>
         </div>
-        <div class="dancing text-2xl md:text-3xl text-white" style="position:absolute; top:24px; left:0; right:0; text-shadow:0 3px 10px rgba(214,93,143,.4); pointer-events:none;">
-            A flower for you 🌸
-        </div>
+        <div class="dancing text-2xl md:text-3xl text-white" style="position:absolute; top:24px; left:0; right:0; text-shadow:0 3px 10px rgba(214,93,143,.4); pointer-events:none;">A flower for you 🌸</div>
     </section>
 
     <!-- ============ VIEW: FOTO (placeholder) ============ -->
@@ -243,85 +325,52 @@
         <p class="dancing text-2xl text-white">Segera hadir 💕</p>
     </section>
 
-    <!-- ============ VIEW: LAGU (placeholder) ============ -->
-    <section class="view" id="view-lagu">
-        <button class="back-btn" onclick="showView('menu')">← Kembali</button>
-        <div class="text-6xl mb-4">💿</div>
-        <h2 class="vibes text-white mb-3" style="font-size:clamp(40px,8vw,70px); text-shadow:0 4px 14px rgba(214,93,143,.4)">Lagu</h2>
-        <p class="dancing text-2xl text-white">Segera hadir 💕</p>
-    </section>
-
     <script>
-        // ---------- Build decorations on birthday view ----------
+        // ---------- Birthday decorations ----------
         (function () {
             const bday = document.getElementById('view-birthday');
-
-            // balloons
-            const balloonPos = [
-                { left: '8%',  top: '18%' }, { left: '85%', top: '15%' },
-                { left: '14%', top: '60%' }, { left: '80%', top: '58%' }
-            ];
-            balloonPos.forEach((p, i) => {
-                const b = document.createElement('div');
-                b.className = 'balloon';
-                b.style.left = p.left; b.style.top = p.top;
-                b.style.animationDelay = (i * 0.8) + 's';
-                bday.appendChild(b);
+            [{left:'8%',top:'18%'},{left:'85%',top:'15%'},{left:'14%',top:'60%'},{left:'80%',top:'58%'}].forEach((p,i)=>{
+                const b=document.createElement('div'); b.className='balloon'; b.style.left=p.left; b.style.top=p.top; b.style.animationDelay=(i*0.8)+'s'; bday.appendChild(b);
             });
-
-            // confetti dots (falling)
-            for (let i = 0; i < 18; i++) {
-                const d = document.createElement('div');
-                d.className = 'confetti-dot';
-                d.style.left = Math.random() * 100 + '%';
-                d.style.top = (-10 - Math.random() * 30) + '%';
-                d.style.animationDuration = (5 + Math.random() * 6) + 's';
-                d.style.animationDelay = (Math.random() * 6) + 's';
-                d.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
-                bday.appendChild(d);
-            }
-
-            // sparkles
-            for (let i = 0; i < 10; i++) {
-                const s = document.createElement('div');
-                s.className = 'spark';
-                s.textContent = '✦';
-                s.style.left = Math.random() * 100 + '%';
-                s.style.top = Math.random() * 100 + '%';
-                s.style.fontSize = (10 + Math.random() * 14) + 'px';
-                s.style.animationDelay = (Math.random() * 2.5) + 's';
-                bday.appendChild(s);
-            }
+            for (let i=0;i<18;i++){ const d=document.createElement('div'); d.className='confetti-dot'; d.style.left=Math.random()*100+'%'; d.style.top=(-10-Math.random()*30)+'%'; d.style.animationDuration=(5+Math.random()*6)+'s'; d.style.animationDelay=(Math.random()*6)+'s'; d.style.borderRadius=Math.random()>0.5?'50%':'2px'; bday.appendChild(d); }
+            for (let i=0;i<10;i++){ const s=document.createElement('div'); s.className='spark'; s.textContent='✦'; s.style.left=Math.random()*100+'%'; s.style.top=Math.random()*100+'%'; s.style.fontSize=(10+Math.random()*14)+'px'; s.style.animationDelay=(Math.random()*2.5)+'s'; bday.appendChild(s); }
         })();
 
         // ---------- View navigation ----------
         let current = 'birthday';
         function showView(name) {
             const next = document.getElementById('view-' + name);
-            const cur = document.getElementById('view-' + current);
             if (!next || name === current) return;
-            cur.classList.remove('active');
+            document.getElementById('view-' + current).classList.remove('active');
             next.classList.add('active');
             current = name;
+            if (name === 'menu') playMenuEntrance();
             startMusic();
         }
         window.showView = showView;
+
+        function playMenuEntrance() {
+            document.querySelectorAll('#view-menu .menu-card').forEach((c, i) => {
+                c.style.animation = 'none'; void c.offsetWidth;
+                c.style.animation = `dropIn .7s cubic-bezier(.2,1.3,.4,1) ${i * 0.13}s both`;
+            });
+        }
+
+        // ---------- Message reveal ----------
+        window.toggleLetter = () => document.getElementById('letter').classList.toggle('open');
 
         // ---------- Lo-fi music ----------
         const lofi = new Audio('../asset/lofi.mp3');
         lofi.loop = true; lofi.volume = 0.35;
         const musicBtn = document.getElementById('music-toggle');
         let musicStarted = false;
-        function startMusic() {
-            if (musicStarted) return;
-            lofi.play().then(() => { musicStarted = true; musicBtn.classList.add('playing'); }).catch(() => {});
-        }
+        function startMusic() { if (musicStarted) return; lofi.play().then(() => { musicStarted = true; musicBtn.classList.add('playing'); }).catch(() => {}); }
         musicBtn.addEventListener('click', () => {
             if (lofi.paused) { lofi.play().catch(() => {}); musicBtn.classList.add('playing'); }
             else { lofi.pause(); musicBtn.classList.remove('playing'); }
         });
 
-        // ---------- Enter from start overlay ----------
+        // ---------- Enter ----------
         function enter() {
             document.getElementById('start').style.display = 'none';
             document.getElementById('view-birthday').classList.add('active');
