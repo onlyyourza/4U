@@ -6,556 +6,331 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://cdn.jsdelivr.net/npm/js-confetti@latest/dist/js-confetti.browser.js"></script>
-    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css" />
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Spline 3D viewer -->
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Dancing+Script:wght@500;700&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Spline 3D viewer (untuk halaman flower) -->
     <script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.48/build/spline-viewer.js"></script>
     <title>4 YOU — 2026</title>
     <style>
-        * {
-            user-select: none;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            box-sizing: border-box;
+        * { box-sizing: border-box; user-select: none; -webkit-user-select: none; }
+
+        html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; }
+        body {
+            font-family: 'Quicksand', sans-serif;
+            color: #7a3b52;
+            background: linear-gradient(160deg, #ffd9e8 0%, #ffc2d9 50%, #ffb3cd 100%);
         }
 
-        html { scroll-behavior: smooth; }
-        body { margin: 0; padding: 0; font-family: 'Quicksand', sans-serif; color: #6b2c44; }
+        .vibes   { font-family: 'Great Vibes', cursive; }
+        .dancing { font-family: 'Dancing Script', cursive; }
 
-        .pacifico { font-family: 'Pacifico', cursive; }
-
-        /* ===== Floating hearts background ===== */
-        .heart-float {
-            position: fixed;
-            bottom: -40px;
-            font-size: 20px;
-            opacity: 0.6;
-            pointer-events: none;
-            z-index: 1;
-            animation: floatUp linear infinite;
+        /* ===== View system (no scroll, click navigation) ===== */
+        .view {
+            position: fixed; inset: 0;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.6s ease;
+            padding: 24px; text-align: center;
         }
-        @keyframes floatUp {
-            to { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
+        .view.active { opacity: 1; pointer-events: auto; }
+
+        /* ===== Decorative white birthday attributes ===== */
+        .deco { position: absolute; pointer-events: none; opacity: 0.95; }
+
+        .balloon {
+            position: absolute; width: 44px; height: 56px; background: #fff;
+            border-radius: 50% 50% 50% 50%; opacity: 0.9; pointer-events: none;
+            box-shadow: inset -6px -6px 0 rgba(255,180,205,0.25);
+            animation: sway 6s ease-in-out infinite;
         }
-
-        /* ===== Empty polaroid placeholders ===== */
-        .polaroid {
-            background: #fff;
-            padding: 10px 10px 28px 10px;
-            border-radius: 6px;
-            box-shadow: 0 10px 30px rgba(251, 111, 146, 0.25);
+        .balloon::before {
+            content: ''; position: absolute; bottom: -6px; left: 50%; transform: translateX(-50%);
+            border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 7px solid #fff;
         }
-        .polaroid-empty {
-            width: 100%;
-            aspect-ratio: 3/4;
-            border: 2px dashed #ffafcc;
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #ffafcc;
-            font-size: 28px;
-            background: #fff5f9;
+        .balloon::after {
+            content: ''; position: absolute; bottom: -42px; left: 50%; width: 1px; height: 42px;
+            background: rgba(255,255,255,0.7);
         }
+        @keyframes sway { 0%,100% { transform: translateY(0) rotate(-4deg); } 50% { transform: translateY(-14px) rotate(4deg); } }
 
-        /* ===== Spline ===== */
-        spline-viewer { width: 100%; height: 100%; }
+        .confetti-dot {
+            position: absolute; width: 9px; height: 9px; background: #fff; opacity: 0.85;
+            border-radius: 2px; animation: fall linear infinite; pointer-events: none;
+        }
+        @keyframes fall { to { transform: translateY(105vh) rotate(360deg); } }
 
-        ::-webkit-scrollbar { width: 10px; height: 10px; }
-        ::-webkit-scrollbar-track { background: #ffe4ee; }
-        ::-webkit-scrollbar-thumb { background: #ff8fab; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #fb6f92; }
-        * { scrollbar-width: thin; scrollbar-color: #ff8fab #ffe4ee; }
+        .spark { position: absolute; color: #fff; opacity: 0.9; animation: twinkle 2.5s ease-in-out infinite; }
+        @keyframes twinkle { 0%,100% { opacity: 0.2; transform: scale(0.8); } 50% { opacity: 0.95; transform: scale(1.2); } }
 
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        /* Garland at top */
+        .garland { position: absolute; top: 0; left: 0; width: 100%; }
 
         /* ===== Buttons ===== */
-        #back-btn {
-            position: fixed; top: 16px; left: 16px; z-index: 100;
-            background: #ff8fab; color: #fff; padding: 8px 16px; border-radius: 999px;
-            font-weight: 700; font-size: 13px; box-shadow: 0 4px 12px rgba(251,111,146,0.4);
-            transition: transform 0.2s, background 0.2s; display: none; text-decoration: none;
+        .continue-link {
+            position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
+            color: #fff; font-weight: 600; font-size: 15px; cursor: pointer;
+            display: flex; flex-direction: column; align-items: center; gap: 6px;
+            text-shadow: 0 2px 8px rgba(214,93,143,0.4); animation: bob 2s ease-in-out infinite;
         }
-        #back-btn:hover { background: #fb6f92; transform: translateY(-2px); }
+        @keyframes bob { 0%,100% { transform: translate(-50%, 0); } 50% { transform: translate(-50%, 8px); } }
+        .continue-link .chev { font-size: 26px; }
+
+        .back-btn {
+            position: fixed; top: 18px; left: 18px; z-index: 50;
+            background: rgba(255,255,255,0.85); color: #fb6f92; border: none;
+            padding: 9px 18px; border-radius: 999px; font-weight: 700; font-size: 13px; cursor: pointer;
+            box-shadow: 0 4px 14px rgba(251,111,146,0.3); transition: transform 0.2s, background 0.2s;
+        }
+        .back-btn:hover { transform: translateX(-3px); background: #fff; }
 
         #music-toggle {
-            position: fixed; bottom: 20px; right: 20px; z-index: 100;
-            width: 52px; height: 52px; border-radius: 50%; border: none;
-            background: #ff8fab; color: #fff; font-size: 22px; cursor: pointer;
-            box-shadow: 0 6px 18px rgba(251,111,146,0.45);
-            transition: transform 0.2s; display: none;
+            position: fixed; bottom: 20px; right: 20px; z-index: 50;
+            width: 50px; height: 50px; border-radius: 50%; border: none;
+            background: rgba(255,255,255,0.9); color: #fb6f92; font-size: 22px; cursor: pointer;
+            box-shadow: 0 6px 18px rgba(251,111,146,0.4); transition: transform 0.2s; display: none;
         }
         #music-toggle:hover { transform: scale(1.1); }
         #music-toggle.playing { animation: spin 4s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* ===== Doa slider ===== */
-        .doa-track {
-            display: flex; gap: 18px; overflow-x: auto; scroll-behavior: smooth;
-            padding: 8px 4px 20px; cursor: grab; scroll-snap-type: x proximity;
+        /* ===== Menu cards ===== */
+        .menu-grid {
+            display: flex; flex-wrap: wrap; gap: 22px; justify-content: center; max-width: 760px;
         }
-        .doa-track.grabbing { cursor: grabbing; scroll-behavior: auto; }
-        .doa-card {
-            flex: 0 0 240px; scroll-snap-align: center;
-            border-radius: 20px; padding: 28px 22px; min-height: 220px;
-            display: flex; align-items: center; justify-content: center; text-align: center;
-            font-weight: 600; box-shadow: 0 10px 26px rgba(251,111,146,0.22);
+        .menu-card {
+            width: 150px; height: 170px; background: rgba(255,255,255,0.92); border-radius: 24px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px;
+            cursor: pointer; box-shadow: 0 12px 30px rgba(251,111,146,0.25);
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
         }
-        .doa-arrow {
-            width: 44px; height: 44px; border-radius: 50%; border: none; cursor: pointer;
-            background: #fff; color: #fb6f92; font-size: 20px; box-shadow: 0 4px 14px rgba(251,111,146,0.3);
-            transition: transform 0.2s, background 0.2s; flex-shrink: 0;
-        }
-        .doa-arrow:hover { background: #fb6f92; color: #fff; transform: scale(1.08); }
+        .menu-card:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(251,111,146,0.35); }
+        .menu-card svg { width: 56px; height: 56px; }
+        .menu-card span { font-weight: 700; color: #fb6f92; font-size: 15px; }
 
-        /* ===== Memory game ===== */
-        .game-grid {
-            display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
-            width: 100%; max-width: 420px; margin: 0 auto;
-        }
-        .card {
-            aspect-ratio: 1; border-radius: 14px; cursor: pointer;
-            perspective: 600px; background: transparent;
-        }
-        .card-inner {
-            position: relative; width: 100%; height: 100%;
-            transition: transform 0.5s; transform-style: preserve-3d;
-        }
-        .card.flipped .card-inner, .card.matched .card-inner { transform: rotateY(180deg); }
-        .card-face {
-            position: absolute; inset: 0; border-radius: 14px;
-            display: flex; align-items: center; justify-content: center;
-            backface-visibility: hidden; font-size: clamp(24px, 7vw, 40px);
-        }
-        .card-front {
-            background: linear-gradient(135deg, #ff8fab, #fb6f92); color: #fff; font-size: 26px;
-            box-shadow: 0 6px 16px rgba(251,111,146,0.35);
-        }
-        .card-back {
-            background: #fff; transform: rotateY(180deg);
-            box-shadow: 0 6px 16px rgba(251,111,146,0.25);
-        }
-        .card.matched { animation: pop 0.4s ease; }
-        @keyframes pop { 0%,100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+        /* entrance pop for cards */
+        .pop-in { animation: popIn 0.5s ease both; }
+        @keyframes popIn { from { opacity: 0; transform: scale(0.8) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
 
-        /* ===== Upload ===== */
-        #upload-zone { border: 3px dashed #ffafcc; transition: 0.2s; position: relative; }
-        #upload-zone.dragover { border-color: #fb6f92; background: #ffe4ee; }
-        #upload-zone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
-        .progress-bar { height: 4px; background: #fb6f92; border-radius: 2px; transition: width 0.3s; }
+        spline-viewer { width: 100%; height: 100%; }
 
-        .gallery-card { animation: fadeInUp 0.4s ease forwards; position: relative; }
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
-        .delete-btn {
-            position: absolute; top: 8px; right: 8px; background: rgba(251,111,146,0.9); color: #fff;
-            border: none; width: 26px; height: 26px; border-radius: 50%; font-size: 14px; cursor: pointer;
-            opacity: 0; transition: 0.2s; display: flex; align-items: center; justify-content: center;
+        /* Start overlay */
+        #start {
+            position: fixed; inset: 0; z-index: 60; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; gap: 16px;
+            background: linear-gradient(160deg, #ffd9e8, #ffb3cd);
         }
-        .gallery-card:hover .delete-btn { opacity: 1; }
-
-        #lightbox { display: none; position: fixed; inset: 0; background: rgba(80,20,40,0.9); z-index: 300; justify-content: center; align-items: center; }
-        #lightbox.active { display: flex; }
-        #lightbox img { max-width: 90vw; max-height: 90vh; border-radius: 12px; }
-        #lightbox-close { position: absolute; top: 20px; right: 24px; color: #fff; font-size: 32px; cursor: pointer; }
-
-        #toast {
-            position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(90px);
-            background: #fb6f92; color: #fff; padding: 10px 20px; border-radius: 999px;
-            font-size: 13px; font-weight: 600; z-index: 400; transition: transform 0.3s; white-space: nowrap;
-        }
-        #toast.show { transform: translateX(-50%) translateY(0); }
     </style>
 </head>
 
-<body class="overflow-hidden">
+<body>
 
-    <a href="../index.html" id="back-btn">← Kembali</a>
-    <button id="music-toggle" title="Musik lo-fi">🎵</button>
-    <div id="toast"></div>
-
-    <div id="lightbox">
-        <span id="lightbox-close" onclick="closeLightbox()">✕</span>
-        <img id="lightbox-img" src="" alt="">
-    </div>
-
-    <!-- Start Overlay -->
-    <div id="start" class="w-full h-full flex overflow-hidden fixed inset-0 z-20 justify-center items-center flex-col gap-4"
-         style="background: linear-gradient(160deg,#fff0f5,#ffd6e7);">
-        <div class="pacifico text-3xl text-[#fb6f92]">2026</div>
-        <button onclick="startPage()" class="px-8 py-3 bg-[#ff8fab] text-white text-2xl rounded-full font-bold shadow-lg" style="box-shadow:0 8px 22px rgba(251,111,146,.45)">
-            START
+    <!-- Start overlay -->
+    <div id="start">
+        <div class="vibes text-5xl text-white" style="text-shadow:0 3px 10px rgba(214,93,143,.4)">2026</div>
+        <button onclick="enter()" class="px-9 py-3 bg-white text-[#fb6f92] text-xl rounded-full font-bold" style="box-shadow:0 8px 22px rgba(251,111,146,.4)">
+            Buka Kado 🎁
         </button>
     </div>
 
-    <!-- ===== Section 1: HERO ===== -->
-    <section class="relative w-full min-h-screen flex flex-col md:flex-row items-center overflow-hidden"
-             style="background: linear-gradient(160deg,#fff0f5 0%,#ffe0ec 50%,#ffd0e0 100%);">
+    <button id="music-toggle" title="Musik lo-fi">🎵</button>
 
-        <!-- Left: text + empty photo strip -->
-        <div class="w-full md:w-1/2 flex flex-col justify-center items-center text-center px-10 md:px-16 py-16 z-10">
-            <div class="pacifico text-5xl md:text-6xl text-[#fb6f92] mb-4" data-aos="fade-down" data-aos-duration="1000">
-                Happy Birthday
+    <!-- ============ VIEW 1: HAPPY BIRTHDAY ============ -->
+    <section class="view" id="view-birthday">
+        <!-- garland -->
+        <svg class="garland" viewBox="0 0 1200 80" preserveAspectRatio="none" height="70">
+            <path d="M0,10 Q300,70 600,18 T1200,12" stroke="#fff" stroke-width="2" fill="none" opacity="0.8"/>
+            <g fill="#fff" opacity="0.9">
+                <polygon points="100,16 118,16 109,40"/>
+                <polygon points="260,34 278,34 269,58"/>
+                <polygon points="430,30 448,30 439,54"/>
+                <polygon points="600,20 618,20 609,44"/>
+                <polygon points="770,30 788,30 779,54"/>
+                <polygon points="940,34 958,34 949,58"/>
+                <polygon points="1090,16 1108,16 1099,40"/>
+            </g>
+        </svg>
+
+        <div class="dancing text-3xl md:text-4xl text-white mb-2" style="text-shadow:0 2px 8px rgba(214,93,143,.35)">08 - 06 - 2026</div>
+
+        <h1 class="vibes text-white leading-none" style="font-size:clamp(64px,14vw,150px); text-shadow:0 6px 22px rgba(214,93,143,.45)">
+            Happy Birthday
+        </h1>
+
+        <p class="dancing text-2xl md:text-3xl text-white mt-3" style="text-shadow:0 2px 8px rgba(214,93,143,.35)">
+            i hope this little gift make you happy
+        </p>
+
+        <div class="continue-link" onclick="showView('menu')">
+            <span>klik disini untuk lanjut ke halaman yang lain</span>
+            <span class="chev">⌄</span>
+        </div>
+    </section>
+
+    <!-- ============ VIEW 2: THESE ARE FOR YOU ============ -->
+    <section class="view" id="view-menu">
+        <button class="back-btn" onclick="showView('birthday')">← Kembali</button>
+
+        <h2 class="vibes text-white mb-10" style="font-size:clamp(44px,9vw,80px); text-shadow:0 5px 18px rgba(214,93,143,.45)">
+            These are for you
+        </h2>
+
+        <div class="menu-grid">
+            <!-- Message -->
+            <div class="menu-card pop-in" style="animation-delay:.05s" onclick="showView('message')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#fb6f92" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2.5" y="5" width="19" height="14" rx="2.5"/>
+                    <path d="M3 6.5l9 6 9-6"/>
+                </svg>
+                <span>Message</span>
             </div>
-            <!-- Ganti teks ucapan 2026 di sini -->
-            <p class="text-[#7a3b52] font-medium max-w-md leading-relaxed mb-8" data-aos="fade-up" data-aos-duration="1200">
-                Untuk Diana — di tahun yang baru ini, semoga kebahagiaan selalu menemukanmu. Halaman ini masih kosong, menunggu kita isi dengan kenangan-kenangan baru. 💕
-            </p>
 
-            <!-- Empty photo placeholders — ganti src <img> untuk menambah foto -->
-            <div class="flex gap-4 justify-center" data-aos="zoom-in" data-aos-duration="1400">
-                <div class="polaroid w-24 md:w-28 rotate-[-8deg]">
-                    <div class="polaroid-empty">+</div>
-                </div>
-                <div class="polaroid w-24 md:w-28 rotate-[4deg] mt-4">
-                    <div class="polaroid-empty">+</div>
-                </div>
-                <div class="polaroid w-24 md:w-28 rotate-[-3deg]">
-                    <div class="polaroid-empty">+</div>
-                </div>
+            <!-- Flower -->
+            <div class="menu-card pop-in" style="animation-delay:.15s" onclick="showView('flower')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#fb6f92" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="9" r="2.2"/>
+                    <path d="M12 6.8c0-2.2 1-3.3 2.3-3.3S16.6 5 15 6.6M12 6.8c0-2.2-1-3.3-2.3-3.3S7.4 5 9 6.6"/>
+                    <path d="M14.2 9c2.2 0 3.3 1 3.3 2.3S15.4 13.6 13.8 12M9.8 9c-2.2 0-3.3 1-3.3 2.3S8.6 13.6 10.2 12"/>
+                    <path d="M12 11.2V21M12 21c-2 0-4-1-5-2.5M12 21c2 0 4-1 5-2.5"/>
+                </svg>
+                <span>Flower</span>
+            </div>
+
+            <!-- Foto -->
+            <div class="menu-card pop-in" style="animation-delay:.25s" onclick="showView('foto')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#fb6f92" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="4.5" width="18" height="15" rx="2.5"/>
+                    <circle cx="9" cy="10" r="1.8"/>
+                    <path d="M4 18l5-4 4 3 3-2.5 4 3.5"/>
+                </svg>
+                <span>Foto</span>
+            </div>
+
+            <!-- Lagu (disc) -->
+            <div class="menu-card pop-in" style="animation-delay:.35s" onclick="showView('lagu')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#fb6f92" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="9"/>
+                    <circle cx="12" cy="12" r="3.2"/>
+                    <circle cx="12" cy="12" r="0.6" fill="#fb6f92"/>
+                    <path d="M12 3a9 9 0 0 1 0 18" opacity="0.5"/>
+                </svg>
+                <span>Lagu</span>
             </div>
         </div>
+    </section>
 
-        <!-- Right: Spline flower -->
-        <div class="w-full md:w-1/2 h-[45vh] md:h-screen relative z-0">
+    <!-- ============ VIEW: MESSAGE (placeholder) ============ -->
+    <section class="view" id="view-message">
+        <button class="back-btn" onclick="showView('menu')">← Kembali</button>
+        <div class="text-6xl mb-4">💌</div>
+        <h2 class="vibes text-white mb-3" style="font-size:clamp(40px,8vw,70px); text-shadow:0 4px 14px rgba(214,93,143,.4)">Message</h2>
+        <p class="dancing text-2xl text-white">Segera hadir 💕</p>
+    </section>
+
+    <!-- ============ VIEW: FLOWER ============ -->
+    <section class="view" id="view-flower" style="padding:0;">
+        <button class="back-btn" onclick="showView('menu')">← Kembali</button>
+        <div style="position:absolute; inset:0;">
             <spline-viewer url="https://prod.spline.design/GKeXMIq-O6IlX04h/scene.splinecode" loading="lazy"></spline-viewer>
         </div>
-    </section>
-
-    <!-- ===== Section 2: Love Letter ===== -->
-    <section class="w-full min-h-screen flex flex-col justify-center items-center py-20 px-6"
-             style="background: linear-gradient(180deg,#ffd0e0,#fff0f5);">
-        <div class="max-w-2xl bg-white/60 backdrop-blur rounded-3xl p-8 md:p-12 shadow-xl" style="box-shadow:0 20px 50px rgba(251,111,146,.18)">
-            <div class="pacifico text-4xl text-[#fb6f92] mb-6 text-center" data-aos="fade-down">I Love You</div>
-            <!-- Ganti isi surat cinta 2026 -->
-            <p class="text-[#7a3b52] font-medium text-lg leading-relaxed mb-5" data-aos="fade-up">
-                [ Isi surat cinta 2026 — akan diisi nanti ]
-            </p>
-            <p class="text-[#7a3b52] font-medium text-lg leading-relaxed mb-5" data-aos="fade-up">
-                [ Bagian 2 — akan diisi nanti ]
-            </p>
-            <p class="text-[#7a3b52] font-medium text-lg leading-relaxed" data-aos="fade-up">
-                [ Bagian 3 — akan diisi nanti ]
-            </p>
+        <div class="dancing text-2xl md:text-3xl text-white" style="position:absolute; top:24px; left:0; right:0; text-shadow:0 3px 10px rgba(214,93,143,.4); pointer-events:none;">
+            A flower for you 🌸
         </div>
     </section>
 
-    <!-- ===== Section 3: GAME ===== -->
-    <section class="w-full min-h-screen flex flex-col justify-center items-center py-20 px-6"
-             style="background: linear-gradient(180deg,#fff0f5,#ffe0ec);">
-        <div class="pacifico text-4xl text-[#fb6f92] mb-2 text-center" data-aos="fade-down">Permainan Kita</div>
-        <p class="text-[#a86b80] font-medium mb-6 text-center" data-aos="fade-up">Temukan semua pasangan kartu yang sama 💞</p>
-
-        <div class="flex gap-6 items-center mb-6 text-[#7a3b52] font-semibold" data-aos="fade-up">
-            <span>Langkah: <span id="game-moves">0</span></span>
-            <span>Cocok: <span id="game-matched">0</span>/8</span>
-            <button id="game-restart" class="px-4 py-2 bg-[#ff8fab] text-white rounded-full text-sm font-bold hover:bg-[#fb6f92] transition-colors">Main Lagi</button>
-        </div>
-
-        <div class="game-grid" id="game-grid" data-aos="zoom-in"></div>
-
-        <div id="game-win" class="mt-6 text-center text-[#fb6f92] font-bold text-lg hidden">
-            🎉 Kamu menang! Sama seperti kita — selalu menemukan satu sama lain. 💕
-        </div>
+    <!-- ============ VIEW: FOTO (placeholder) ============ -->
+    <section class="view" id="view-foto">
+        <button class="back-btn" onclick="showView('menu')">← Kembali</button>
+        <div class="text-6xl mb-4">🖼️</div>
+        <h2 class="vibes text-white mb-3" style="font-size:clamp(40px,8vw,70px); text-shadow:0 4px 14px rgba(214,93,143,.4)">Foto</h2>
+        <p class="dancing text-2xl text-white">Segera hadir 💕</p>
     </section>
 
-    <!-- ===== Section 4: Doa ===== -->
-    <section class="w-full min-h-screen flex flex-col justify-center items-center py-20"
-             style="background: linear-gradient(180deg,#ffe0ec,#ffd0e0);">
-        <div class="pacifico text-4xl text-[#fb6f92] mb-8 text-center" data-aos="fade-down">Doaku Untukmu</div>
-
-        <div class="flex items-center gap-3 w-full max-w-5xl px-4">
-            <button class="doa-arrow" onclick="scrollDoa(-1)">‹</button>
-            <div class="doa-track no-scrollbar flex-1" id="doa-track">
-                <!-- Ganti isi kartu doa 2026 -->
-                <div class="doa-card" style="background:#ffd6e7;color:#7a3b52;">[ Doa 1 — akan diisi nanti ]</div>
-                <div class="doa-card" style="background:#ffc2d4;color:#6b2c44;">[ Doa 2 — akan diisi nanti ]</div>
-                <div class="doa-card" style="background:#ffd6e7;color:#7a3b52;">[ Doa 3 — akan diisi nanti ]</div>
-                <div class="doa-card" style="background:#ffc2d4;color:#6b2c44;">[ Doa 4 — akan diisi nanti ]</div>
-                <div class="doa-card" style="background:#ffd6e7;color:#7a3b52;">[ Doa 5 — akan diisi nanti ]</div>
-            </div>
-            <button class="doa-arrow" onclick="scrollDoa(1)">›</button>
-        </div>
+    <!-- ============ VIEW: LAGU (placeholder) ============ -->
+    <section class="view" id="view-lagu">
+        <button class="back-btn" onclick="showView('menu')">← Kembali</button>
+        <div class="text-6xl mb-4">💿</div>
+        <h2 class="vibes text-white mb-3" style="font-size:clamp(40px,8vw,70px); text-shadow:0 4px 14px rgba(214,93,143,.4)">Lagu</h2>
+        <p class="dancing text-2xl text-white">Segera hadir 💕</p>
     </section>
 
-    <!-- ===== Section 5: Gallery + Upload (kosong) ===== -->
-    <section class="w-full flex flex-col items-center py-20 px-4" style="background: linear-gradient(180deg,#ffd0e0,#fff0f5);">
-        <div class="pacifico text-4xl text-[#fb6f92] mb-2 text-center" data-aos="fade-down">Galeri Foto 2026</div>
-        <p class="text-[#a86b80] font-medium mb-8 text-center" data-aos="fade-up">Mulai kumpulkan kenangan baru kita ✨</p>
-
-        <div class="w-full max-w-xl mb-6">
-            <div id="upload-zone" class="rounded-2xl bg-white/70 p-8 text-center cursor-pointer">
-                <input type="file" id="file-input" accept="image/*" multiple>
-                <div class="text-4xl mb-2">📷</div>
-                <p class="font-bold text-[#6b2c44] text-sm">Klik atau drag foto ke sini</p>
-                <p class="text-[#a86b80] text-xs mt-1">Bisa pilih banyak foto sekaligus • Tersimpan di cloud</p>
-            </div>
-            <div id="upload-progress-list" class="mt-3 flex flex-col gap-2"></div>
-            <div class="flex justify-between items-center mt-3 px-1">
-                <span id="photo-count" class="text-xs text-[#a86b80]">Memuat galeri...</span>
-                <button onclick="confirmClearAll()" class="text-xs text-[#ffafcc] hover:text-[#fb6f92] transition-colors">Hapus semua</button>
-            </div>
-        </div>
-
-        <div id="gallery-grid" class="flex flex-wrap justify-center gap-6 w-full max-w-6xl"></div>
-
-        <div id="gallery-empty" class="flex-col items-center text-center text-[#ffafcc] mt-4 hidden">
-            <div class="text-5xl mb-3">🌸</div>
-            <p class="font-semibold text-sm">Belum ada foto. Upload foto pertamamu!</p>
-        </div>
-        <div id="gallery-loading" class="flex flex-col items-center text-center text-[#ffafcc] mt-4">
-            <div class="text-3xl animate-spin mb-2">⏳</div>
-            <p class="text-sm">Memuat foto...</p>
-        </div>
-    </section>
-
-    <!-- ===== Plain scripts: game, doa, music, hearts ===== -->
     <script>
-        // ---------- Floating hearts ----------
+        // ---------- Build decorations on birthday view ----------
         (function () {
-            const emojis = ['💕','🌸','💗','🌷','💞'];
-            for (let i = 0; i < 14; i++) {
-                const h = document.createElement('div');
-                h.className = 'heart-float';
-                h.textContent = emojis[i % emojis.length];
-                h.style.left = Math.random() * 100 + 'vw';
-                h.style.animationDuration = (8 + Math.random() * 10) + 's';
-                h.style.animationDelay = (Math.random() * 12) + 's';
-                h.style.fontSize = (14 + Math.random() * 16) + 'px';
-                document.body.appendChild(h);
+            const bday = document.getElementById('view-birthday');
+
+            // balloons
+            const balloonPos = [
+                { left: '8%',  top: '18%' }, { left: '85%', top: '15%' },
+                { left: '14%', top: '60%' }, { left: '80%', top: '58%' }
+            ];
+            balloonPos.forEach((p, i) => {
+                const b = document.createElement('div');
+                b.className = 'balloon';
+                b.style.left = p.left; b.style.top = p.top;
+                b.style.animationDelay = (i * 0.8) + 's';
+                bday.appendChild(b);
+            });
+
+            // confetti dots (falling)
+            for (let i = 0; i < 18; i++) {
+                const d = document.createElement('div');
+                d.className = 'confetti-dot';
+                d.style.left = Math.random() * 100 + '%';
+                d.style.top = (-10 - Math.random() * 30) + '%';
+                d.style.animationDuration = (5 + Math.random() * 6) + 's';
+                d.style.animationDelay = (Math.random() * 6) + 's';
+                d.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+                bday.appendChild(d);
+            }
+
+            // sparkles
+            for (let i = 0; i < 10; i++) {
+                const s = document.createElement('div');
+                s.className = 'spark';
+                s.textContent = '✦';
+                s.style.left = Math.random() * 100 + '%';
+                s.style.top = Math.random() * 100 + '%';
+                s.style.fontSize = (10 + Math.random() * 14) + 'px';
+                s.style.animationDelay = (Math.random() * 2.5) + 's';
+                bday.appendChild(s);
             }
         })();
 
-        // ---------- Memory match game ----------
-        const GAME_EMOJIS = ['💕','🌹','🧸','🎀','💌','🌸','🍓','⭐'];
-        let firstCard = null, lock = false, moves = 0, matched = 0;
-
-        function buildGame() {
-            const grid = document.getElementById('game-grid');
-            moves = 0; matched = 0; firstCard = null; lock = false;
-            document.getElementById('game-moves').textContent = '0';
-            document.getElementById('game-matched').textContent = '0';
-            document.getElementById('game-win').classList.add('hidden');
-            grid.innerHTML = '';
-
-            const deck = [...GAME_EMOJIS, ...GAME_EMOJIS].sort(() => Math.random() - 0.5);
-            deck.forEach(emoji => {
-                const card = document.createElement('div');
-                card.className = 'card';
-                card.dataset.emoji = emoji;
-                card.innerHTML = `
-                    <div class="card-inner">
-                        <div class="card-face card-front">💗</div>
-                        <div class="card-face card-back">${emoji}</div>
-                    </div>`;
-                card.addEventListener('click', () => flipCard(card));
-                grid.appendChild(card);
-            });
+        // ---------- View navigation ----------
+        let current = 'birthday';
+        function showView(name) {
+            const next = document.getElementById('view-' + name);
+            const cur = document.getElementById('view-' + current);
+            if (!next || name === current) return;
+            cur.classList.remove('active');
+            next.classList.add('active');
+            current = name;
+            startMusic();
         }
-
-        function flipCard(card) {
-            if (lock || card.classList.contains('flipped') || card.classList.contains('matched')) return;
-            card.classList.add('flipped');
-
-            if (!firstCard) { firstCard = card; return; }
-
-            moves++;
-            document.getElementById('game-moves').textContent = moves;
-
-            if (firstCard.dataset.emoji === card.dataset.emoji) {
-                firstCard.classList.add('matched');
-                card.classList.add('matched');
-                firstCard = null;
-                matched++;
-                document.getElementById('game-matched').textContent = matched;
-                if (matched === GAME_EMOJIS.length) {
-                    document.getElementById('game-win').classList.remove('hidden');
-                    new JSConfetti().addConfetti({ emojis: ['💕','🌸','💗','🌹','✨'] });
-                }
-            } else {
-                lock = true;
-                const a = firstCard; firstCard = null;
-                setTimeout(() => {
-                    a.classList.remove('flipped');
-                    card.classList.remove('flipped');
-                    lock = false;
-                }, 800);
-            }
-        }
-        document.getElementById('game-restart').addEventListener('click', buildGame);
-        buildGame();
-
-        // ---------- Doa smooth scroll ----------
-        const doaTrack = document.getElementById('doa-track');
-        window.scrollDoa = dir => doaTrack.scrollBy({ left: dir * 260, behavior: 'smooth' });
-
-        let dDown = false, dStartX, dScroll;
-        doaTrack.addEventListener('pointerdown', e => { dDown = true; doaTrack.classList.add('grabbing'); dStartX = e.clientX; dScroll = doaTrack.scrollLeft; doaTrack.setPointerCapture(e.pointerId); });
-        doaTrack.addEventListener('pointermove', e => { if (!dDown) return; doaTrack.scrollLeft = dScroll - (e.clientX - dStartX); });
-        const endDrag = () => { dDown = false; doaTrack.classList.remove('grabbing'); };
-        doaTrack.addEventListener('pointerup', endDrag);
-        doaTrack.addEventListener('pointercancel', endDrag);
+        window.showView = showView;
 
         // ---------- Lo-fi music ----------
         const lofi = new Audio('../asset/lofi.mp3');
         lofi.loop = true; lofi.volume = 0.35;
         const musicBtn = document.getElementById('music-toggle');
+        let musicStarted = false;
+        function startMusic() {
+            if (musicStarted) return;
+            lofi.play().then(() => { musicStarted = true; musicBtn.classList.add('playing'); }).catch(() => {});
+        }
         musicBtn.addEventListener('click', () => {
             if (lofi.paused) { lofi.play().catch(() => {}); musicBtn.classList.add('playing'); }
             else { lofi.pause(); musicBtn.classList.remove('playing'); }
         });
 
-        // ---------- Lightbox ----------
-        window.openLightbox = src => { document.getElementById('lightbox-img').src = src; document.getElementById('lightbox').classList.add('active'); };
-        window.closeLightbox = () => document.getElementById('lightbox').classList.remove('active');
-        document.getElementById('lightbox').addEventListener('click', e => { if (e.target.id === 'lightbox') window.closeLightbox(); });
-
-        // ---------- AOS + Start ----------
-        AOS.init({ once: true, offset: 80 });
-
-        window.startPage = () => {
-            const startEl = document.getElementById('start');
-            startEl.querySelector('button').style.display = 'none';
-            let count = 5;
-            const countEl = document.createElement('div');
-            countEl.className = 'text-8xl font-extrabold text-[#fb6f92]';
-            startEl.appendChild(countEl);
-            const iv = setInterval(() => {
-                countEl.textContent = count--;
-                if (count < 0) {
-                    clearInterval(iv);
-                    startEl.style.display = 'none';
-                    document.body.classList.remove('overflow-hidden');
-                    document.getElementById('back-btn').style.display = 'block';
-                    musicBtn.style.display = 'block';
-                    new JSConfetti().addConfetti({ confettiColors: ['#ff8fab','#fb6f92','#ffd6e7','#ffc2d4','#ff5d8f'] });
-                    new Audio('../asset/confetti.mp3').play().catch(() => {});
-                    lofi.play().then(() => musicBtn.classList.add('playing')).catch(() => {});
-                    AOS.refresh();
-                    if (window.loadGallery) window.loadGallery();
-                }
-            }, 1000);
-        };
-    </script>
-
-    <!-- ===== Module: Cloudinary upload + Firestore gallery ===== -->
-    <script type="module">
-        import { initializeApp }   from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-        import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, query, where, serverTimestamp }
-            from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
-        import dbConfig, { cloudinaryConfig } from '../config.js';
-
-        const app = initializeApp(dbConfig);
-        const db  = getFirestore(app);
-        const CLD = cloudinaryConfig;
-        const YEAR = '2026';
-
-        function showToast(msg) {
-            const t = document.getElementById('toast');
-            t.textContent = msg; t.classList.add('show');
-            setTimeout(() => t.classList.remove('show'), 3000);
+        // ---------- Enter from start overlay ----------
+        function enter() {
+            document.getElementById('start').style.display = 'none';
+            document.getElementById('view-birthday').classList.add('active');
+            musicBtn.style.display = 'block';
+            new JSConfetti().addConfetti({ confettiColors: ['#fff','#ffd6e7','#ffc2d4','#fb6f92','#ff8fab'] });
+            new Audio('../asset/confetti.mp3').play().catch(() => {});
+            startMusic();
         }
-
-        async function loadGallery() {
-            const grid = document.getElementById('gallery-grid');
-            const empty = document.getElementById('gallery-empty');
-            const loading = document.getElementById('gallery-loading');
-            const count = document.getElementById('photo-count');
-            try {
-                const snap = await getDocs(query(collection(db, 'photos'), where('year', '==', YEAR)));
-                loading.style.display = 'none';
-                grid.innerHTML = '';
-                const docs = snap.docs.sort((a, b) => (b.data().uploadedAt?.seconds || 0) - (a.data().uploadedAt?.seconds || 0));
-                if (docs.length === 0) { empty.classList.remove('hidden'); empty.classList.add('flex'); count.textContent = '0 foto'; return; }
-                empty.classList.add('hidden');
-                count.textContent = `${docs.length} foto`;
-                docs.forEach(d => addCard(grid, d.data().url, d.id, d.data().publicId, d.data().name));
-            } catch (err) {
-                loading.innerHTML = '<p class="text-sm text-red-400">Gagal memuat foto. Cek koneksi.</p>';
-                console.error(err);
-            }
-        }
-        window.loadGallery = loadGallery;
-
-        function addCard(grid, url, docId, publicId, name) {
-            const card = document.createElement('div');
-            card.className = 'gallery-card bg-white p-2 rounded-xl max-w-[280px] h-fit';
-            card.innerHTML = `
-                <img src="${url}" alt="${name || ''}" class="rounded-lg w-full cursor-pointer object-cover max-h-[240px]" onclick="openLightbox('${url}')">
-                <button class="delete-btn" onclick="deletePhoto('${docId}','${publicId}',this)">✕</button>`;
-            grid.appendChild(card);
-        }
-
-        window.deletePhoto = async (docId, publicId, btn) => {
-            if (!confirm('Hapus foto ini?')) return;
-            btn.disabled = true;
-            try {
-                await deleteDoc(doc(db, 'photos', docId));
-                btn.closest('.gallery-card').remove();
-                const total = document.getElementById('gallery-grid').querySelectorAll('.gallery-card').length;
-                document.getElementById('photo-count').textContent = `${total} foto`;
-                if (total === 0) { const e = document.getElementById('gallery-empty'); e.classList.remove('hidden'); e.classList.add('flex'); }
-                showToast('Foto dihapus');
-            } catch (err) { showToast('Gagal menghapus'); btn.disabled = false; console.error(err); }
-        };
-
-        window.confirmClearAll = async () => {
-            if (!confirm('Hapus SEMUA foto 2026?')) return;
-            const snap = await getDocs(query(collection(db, 'photos'), where('year', '==', YEAR)));
-            await Promise.all(snap.docs.map(d => deleteDoc(doc(db, 'photos', d.id))));
-            await loadGallery();
-            showToast('Semua foto dihapus');
-        };
-
-        function handleFiles(files) { Array.from(files).filter(f => f.type.startsWith('image/')).forEach(uploadFile); }
-
-        function uploadFile(file) {
-            const list = document.getElementById('upload-progress-list');
-            const id = `p${Date.now()}${Math.random().toString(36).slice(2)}`;
-            const item = document.createElement('div');
-            item.className = 'bg-white/70 rounded-lg p-3';
-            item.innerHTML = `
-                <div class="flex justify-between mb-1">
-                    <span class="text-xs text-[#6b2c44] truncate max-w-[80%]">${file.name}</span>
-                    <span class="text-xs text-[#a86b80]" id="${id}-pct">0%</span>
-                </div>
-                <div class="bg-[#ffd6e7] rounded-full overflow-hidden"><div class="progress-bar" id="${id}-bar" style="width:0%"></div></div>`;
-            list.appendChild(item);
-
-            const fd = new FormData();
-            fd.append('file', file);
-            fd.append('upload_preset', CLD.uploadPreset);
-            fd.append('folder', `${CLD.folder}/${YEAR}`);
-
-            const xhr = new XMLHttpRequest();
-            xhr.open('POST', `https://api.cloudinary.com/v1_1/${CLD.cloudName}/image/upload`);
-            xhr.upload.onprogress = e => {
-                if (!e.lengthComputable) return;
-                const pct = Math.round((e.loaded / e.total) * 100);
-                document.getElementById(`${id}-bar`).style.width = `${pct}%`;
-                document.getElementById(`${id}-pct`).textContent = `${pct}%`;
-            };
-            xhr.onload = async () => {
-                item.remove();
-                if (xhr.status !== 200) { showToast(`Gagal upload: ${file.name}`); return; }
-                const res = JSON.parse(xhr.responseText);
-                const docRef = await addDoc(collection(db, 'photos'), { url: res.secure_url, publicId: res.public_id, name: file.name, year: YEAR, uploadedAt: serverTimestamp() });
-                const grid = document.getElementById('gallery-grid');
-                document.getElementById('gallery-empty').classList.add('hidden');
-                addCard(grid, res.secure_url, docRef.id, res.public_id, file.name);
-                document.getElementById('photo-count').textContent = `${grid.querySelectorAll('.gallery-card').length} foto`;
-                showToast('Foto berhasil diupload ✓');
-            };
-            xhr.onerror = () => { item.remove(); showToast(`Gagal upload: ${file.name}`); };
-            xhr.send(fd);
-        }
-
-        document.getElementById('file-input').addEventListener('change', e => handleFiles(e.target.files));
-        const zone = document.getElementById('upload-zone');
-        zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('dragover'); });
-        zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
-        zone.addEventListener('drop', e => { e.preventDefault(); zone.classList.remove('dragover'); handleFiles(e.dataTransfer.files); });
+        window.enter = enter;
     </script>
 </body>
 </html>
